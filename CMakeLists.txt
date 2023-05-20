@@ -10,4 +10,7 @@ include(GNUInstallDirs)
 find_package(SDL2 REQUIRED COMPONENTS SDL2 CONFIG)
 
 add_subdirectory(src)
-add_subdirectory(examples)
+
+if(BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif()
