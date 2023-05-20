@@ -92,6 +92,25 @@ void vga::blit(const std::vector<int>& source)
 
 
 ////////////////////////////////////////////////////////////////////////////////
+void vga::blit(const std::vector<int>& source, const SDL_Rect& rect)
+{
+    for(int line{0}, source_offset{0}; line != rect.h; ++line)
+    {
+        auto ram_offset = rect.x + width * (rect.y + line);
+        std::copy_n(source.begin() + source_offset, rect.w, m_ram.begin() + ram_offset);
+        source_offset += rect.w;
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+vga::color_t vga::get_color(const int index) const
+{
+    return m_palette.at(index);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 void vga::reset_palette()
 {
     auto it = std::copy(default_palette.begin(), default_palette.end(), m_palette.begin());

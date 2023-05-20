@@ -22,7 +22,7 @@ class vga_test
     ////////////////////////////////////////////////////////////////////////////
     void run()
     {
-        // color bars
+        // color bars using set_pixel
         int color{0};
         for(int y{0}; y != 200; ++y)
         {
@@ -38,6 +38,10 @@ class vga_test
 
             color = 0;
         }
+
+        // black box using blit
+        std::vector<int> box(40 * 40, 0);
+        m_vga.blit(box, SDL_Rect{40, 40, 40, 40});
 
         while(m_running)
         {
