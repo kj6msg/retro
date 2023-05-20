@@ -38,6 +38,11 @@ class vga
     void blit(const std::vector<int>& source);
 
     ////////////////////////////////////////////////////////////////////////////
+    /// \brief Reset to the default palette.
+    ////////////////////////////////////////////////////////////////////////////
+    void reset_palette();
+
+    ////////////////////////////////////////////////////////////////////////////
     /// \brief Set an indexed color in the palette.
     /// \param index palette index (0-255)
     /// \param color ARGB formatted color
@@ -61,7 +66,7 @@ class vga
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Show the screen.
     ////////////////////////////////////////////////////////////////////////////
-    void show() noexcept;
+    void show();
 
     vga(const vga&) = delete;
     vga(vga&&) = delete;
@@ -73,8 +78,9 @@ class vga
     SDL_Renderer* m_renderer{nullptr};
     SDL_Texture*  m_texture{nullptr};
 
-    std::vector<color_t> m_pixels;
+    std::vector<int> m_ram;
     std::vector<color_t> m_palette;
+    std::vector<color_t> m_pixels;
 };
 
 
