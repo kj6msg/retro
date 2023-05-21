@@ -49,7 +49,7 @@ class vga
     /// \param index palette index (0-255)
     /// \return ARGB formatted color
     ////////////////////////////////////////////////////////////////////////////
-    color_t get_color(int index) const;
+    [[nodiscard]] color_t get_color(int index) const;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Reset to the default palette.

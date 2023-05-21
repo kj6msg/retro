@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cstddef>
 #include <stdexcept>
 #include <vector>
 
@@ -106,7 +107,7 @@ void vga::blit(const std::vector<int>& source, const SDL_Rect& rect)
 ////////////////////////////////////////////////////////////////////////////////
 vga::color_t vga::get_color(const int index) const
 {
-    return m_palette.at(index);
+    return m_palette.at(static_cast<std::size_t>(index));
 }
 
 
@@ -121,7 +122,7 @@ void vga::reset_palette()
 ////////////////////////////////////////////////////////////////////////////////
 void vga::set_color(const int index, const color_t color)
 {
-    m_palette.at(index) = color;
+    m_palette.at(static_cast<std::size_t>(index)) = color;
 }
 
 
@@ -135,7 +136,7 @@ void vga::set_palette(const std::vector<color_t>& colors)
 ////////////////////////////////////////////////////////////////////////////////
 void vga::set_pixel(const int x, const int y, const int color_index)
 {
-    const auto addr = x + width * y;
+    const auto addr = static_cast<std::size_t>(x + width * y);
     m_ram.at(addr) = color_index;
 }
 
@@ -143,7 +144,10 @@ void vga::set_pixel(const int x, const int y, const int color_index)
 ////////////////////////////////////////////////////////////////////////////////
 void vga::show()
 {
-    std::transform(m_ram.begin(), m_ram.end(), m_pixels.begin(),[&](auto i){ return m_palette.at(i); });
+    std::transform(m_ram.begin(), m_ram.end(), m_pixels.begin(),[&](auto i)
+    {
+        return m_palette.at(static_cast<std::size_t>(i));
+    });
 
     constexpr int pitch = width * sizeof(color_t);
     SDL_UpdateTexture(m_texture, nullptr, m_pixels.data(), pitch);
