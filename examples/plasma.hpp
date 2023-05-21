@@ -22,23 +22,28 @@ class plasma
     plasma() : m_colors(256)
     {
         // generate palette
-        auto it = std::for_each_n(m_colors.begin(), 128,
-            [n = int(0)](auto &c) mutable { c = retro::make_color(n, n, n); n += 2; });
+        auto it = std::for_each_n(m_colors.begin(), 128, [n = int(0)](auto &c) mutable
+        {
+            c = retro::make_color(n, n, n);
+            n += 2;
+        });
         std::reverse_copy(m_colors.begin(), it, it);
         m_vga.set_palette(m_colors);
 
         // generate plasma
-        std::vector<int> img(320 * 200);
+        constexpr int width{320};
+        constexpr int height{200};
+        std::vector<int> img(width * height);
 
-        for(int y{0}; y != 200; ++y)
+        for(int y{0}; y != height; ++y)
         {
-            for(int x{0}; x != 320; ++x)
+            for(int x{0}; x != width; ++x)
             {
-                auto color = (std::cosf(static_cast<float>(x) * 0.1f) +
-                              std::sinf(static_cast<float>(y) * 0.1f)) *
-                              63.5f + 128.0f;
+                const auto color = (std::cosf(static_cast<float>(x) * 0.1f) +
+                                    std::sinf(static_cast<float>(y) * 0.1f)) *
+                                    63.5f + 128.0f;
 
-                auto i = static_cast<std::size_t>(x + 320 * y);
+                const auto i = static_cast<std::size_t>(x + width * y);
                 img[i] = static_cast<int>(color);
             }
         }
