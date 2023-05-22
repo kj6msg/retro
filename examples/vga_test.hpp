@@ -14,7 +14,7 @@
 class vga_test
 {
   public:
-    vga_test()
+    vga_test() : m_sdl2(retro::sdl2::subsystem::video), m_vga(retro::vga::mode::vga_13h)
     {
         m_running = true;
     };
@@ -23,8 +23,7 @@ class vga_test
     void run()
     {
         // color bars using set_pixel
-        int color{0};
-        for(int y{0}; y != 200; ++y)
+        for(int y{0}, color{0}; y != 200; ++y)
         {
             for(int x{0}; x < 320; x += 20)
             {
@@ -60,7 +59,7 @@ class vga_test
   private:
     bool m_running{false};
 
-    retro::sdl2 m_sdl2{retro::sdl2::subsystem::video};
+    retro::sdl2 m_sdl2;
     retro::vga m_vga;
 };
 

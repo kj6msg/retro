@@ -4,12 +4,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "retro/vga.hpp"
+#include "video.hpp"
 
 #include <SDL2/SDL.h>
 
 #include <algorithm>
 #include <array>
 #include <cstddef>
+#include <map>
 #include <stdexcept>
 #include <vector>
 
@@ -19,33 +21,17 @@ namespace retro
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-static constexpr int width{320};
-static constexpr int height{200};
-
-static constexpr std::array<vga::color_t, 16> default_palette
+vga::vga(const mode video_mode)
 {
-    make_color(0, 0, 0),        // black
-    make_color(0, 0, 170),      // blue
-    make_color(0, 170, 0),      // green
-    make_color(0, 170, 170),    // cyan
-    make_color(170, 0, 0),      // red
-    make_color(170, 0, 170),    // magenta
-    make_color(170, 85, 0),     // brown
-    make_color(170, 170, 170),  // light gray
-    make_color(85, 85, 85),     // dark gray
-    make_color(85, 85, 255),    // light blue
-    make_color(85, 255, 85),    // light green
-    make_color(85, 255, 255),   // light cyan
-    make_color(255, 85, 85),    // light red
-    make_color(255, 85, 255),   // light magenta
-    make_color(255, 255, 85),   // yellow
-    make_color(255, 255, 255)   // white
-};
+    const auto mode = video::modes.at(video_mode);
+    m_width = mode.width;
+    m_height = mode.height;
+    m_num_colors = mode.num_colors;
 
+    m_ram.resize(m_width * m_height);
+    m_palette.resize(m_num_colors);
+    m_pixels.resize(m_width * m_height);
 
-////////////////////////////////////////////////////////////////////////////////
-vga::vga() : m_ram(width * height), m_palette(256), m_pixels(width * height)
-{
     SDL_CreateWindowAndRenderer(0, 0, SDL_WINDOW_FULLSCREEN_DESKTOP, &m_window, &m_renderer);
 
     if(m_window == nullptr || m_renderer == nullptr)
@@ -54,14 +40,14 @@ vga::vga() : m_ram(width * height), m_palette(256), m_pixels(width * height)
     }
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-    SDL_RenderSetLogicalSize(m_renderer, width, height);
+    SDL_RenderSetLogicalSize(m_renderer, m_width, m_height);
 
     SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
     SDL_RenderClear(m_renderer);
     SDL_RenderPresent(m_renderer);
 
     m_texture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_ARGB8888,
-                                  SDL_TEXTUREACCESS_STREAMING, width, height);
+                                  SDL_TEXTUREACCESS_STREAMING, m_width, m_height);
 
     if(m_texture == nullptr)
     {
@@ -97,7 +83,7 @@ void vga::blit(const std::vector<int>& source, const SDL_Rect& rect)
 {
     for(int line{0}, source_offset{0}; line != rect.h; ++line)
     {
-        auto ram_offset = rect.x + width * (rect.y + line);
+        auto ram_offset = rect.x + m_width * (rect.y + line);
         std::copy_n(source.begin() + source_offset, rect.w, m_ram.begin() + ram_offset);
         source_offset += rect.w;
     }
@@ -114,7 +100,7 @@ vga::color_t vga::get_color(const int index) const
 ////////////////////////////////////////////////////////////////////////////////
 void vga::reset_palette()
 {
-    auto it = std::copy(default_palette.begin(), default_palette.end(), m_palette.begin());
+    auto it = std::copy(video::ega_palette.begin(), video::ega_palette.end(), m_palette.begin());
     std::fill(it, m_palette.end(), make_color(0, 0, 0));
 }
 
@@ -136,7 +122,7 @@ void vga::set_palette(const std::vector<color_t>& colors)
 ////////////////////////////////////////////////////////////////////////////////
 void vga::set_pixel(const int x, const int y, const int color_index)
 {
-    const auto addr = static_cast<std::size_t>(x + width * y);
+    const auto addr = static_cast<std::size_t>(x + m_width * y);
     m_ram.at(addr) = color_index;
 }
 
@@ -149,7 +135,7 @@ void vga::show()
         return m_palette.at(static_cast<std::size_t>(i));
     });
 
-    constexpr int pitch = width * sizeof(color_t);
+    const int pitch = m_width * sizeof(color_t);
     SDL_UpdateTexture(m_texture, nullptr, m_pixels.data(), pitch);
 
     SDL_RenderClear(m_renderer);

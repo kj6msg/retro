@@ -20,7 +20,7 @@
 class fire
 {
   public:
-    fire()
+    fire() : m_sdl2(retro::sdl2::subsystem::video), m_vga(retro::vga::mode::vga_13h)
     {
         // generate palette
         std::vector<retro::vga::color_t> colors(256);
@@ -126,7 +126,7 @@ class fire
   private:
     bool m_running{false};
 
-    retro::sdl2 m_sdl2{retro::sdl2::subsystem::video};
+    retro::sdl2 m_sdl2;
     retro::vga m_vga;
 };
 

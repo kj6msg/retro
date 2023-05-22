@@ -19,7 +19,7 @@
 class plasma
 {
   public:
-    plasma() : m_colors(256)
+    plasma() : m_colors(256), m_sdl2(retro::sdl2::subsystem::video), m_vga(retro::vga::mode::vga_13h)
     {
         // generate palette
         auto it = std::for_each_n(m_colors.begin(), 128, [n = int(0)](auto &c) mutable
@@ -77,7 +77,7 @@ class plasma
 
     std::vector<retro::vga::color_t> m_colors;
 
-    retro::sdl2 m_sdl2{retro::sdl2::subsystem::video};
+    retro::sdl2 m_sdl2;
     retro::vga m_vga;
 };
 

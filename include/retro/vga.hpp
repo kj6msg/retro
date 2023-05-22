@@ -21,10 +21,20 @@ class vga
   public:
     using color_t = Uint32;
 
+    enum class mode
+    {
+        vga_03h,
+        ega_0dh,
+        ega_0eh,
+        vga_12h,
+        vga_13h
+    };
+
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Create a VGA device.
+    /// \param video_mode standard video mode
     ////////////////////////////////////////////////////////////////////////////
-    vga();
+    explicit vga(mode video_mode);
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Destroy the associated window, renderer, and texture.
@@ -88,6 +98,10 @@ class vga
     vga& operator=(vga&&) = delete;
 
   private:
+    int m_width{};
+    int m_height{};
+    int m_num_colors{};
+
     SDL_Window*   m_window{nullptr};
     SDL_Renderer* m_renderer{nullptr};
     SDL_Texture*  m_texture{nullptr};

@@ -16,6 +16,7 @@ set_target_properties(retro PROPERTIES
 target_sources(retro PRIVATE
     sdl2.cpp
     vga.cpp
+    video.hpp
 )
 
 target_sources(retro PUBLIC
