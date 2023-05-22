@@ -3,11 +3,11 @@
 ## Copyright (c) 2023 Ryan Clarke
 ################################################################################
 
-add_executable(vga_test vga_test.cpp vga_test.hpp)
+add_executable(xor_demo xor_demo.cpp xor_demo.hpp)
 
-target_compile_features(vga_test PRIVATE cxx_std_20)
-target_compile_options(vga_test PRIVATE -Wall -Wextra)
-target_link_libraries(vga_test PRIVATE retro)
+target_compile_features(xor_demo PRIVATE cxx_std_20)
+target_compile_options(xor_demo PRIVATE -Wall -Wextra)
+target_link_libraries(xor_demo PRIVATE retro)
 
 add_executable(plasma plasma.cpp plasma.hpp)
 

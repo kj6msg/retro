@@ -3,18 +3,20 @@
 // Copyright (c) 2023 Ryan Clarke
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef VGA_TEST_HPP
-#define VGA_TEST_HPP
+#ifndef XOR_DEMO_HPP
+#define XOR_DEMO_HPP
 
 #include <retro/retro.hpp>
 #include <SDL2/SDL.h>
 
+#include <vector>
+
 
 ////////////////////////////////////////////////////////////////////////////////
-class vga_test
+class xor_demo
 {
   public:
-    vga_test() : m_sdl2(retro::sdl2::subsystem::video), m_vga(retro::vga::mode::vga_13h)
+    xor_demo() : m_sdl2(retro::sdl2::subsystem::video), m_vga(retro::vga::mode::vga_13h)
     {
         m_running = true;
     };
@@ -22,25 +24,25 @@ class vga_test
     ////////////////////////////////////////////////////////////////////////////
     void run()
     {
-        // color bars using set_pixel
-        for(int y{0}, color{0}; y != 200; ++y)
+        // generate palette
+        std::vector<retro::vga::color_t> colors(256);
+
+        for(int n{0}; auto &c : colors)
         {
-            for(int x{0}; x < 320; x += 20)
-            {
-                for(int c{0}; c != 20; ++c)
-                {
-                    m_vga.set_pixel(x + c, y, color);
-                }
-
-                ++color;
-            }
-
-            color = 0;
+            c = retro::make_color(n, n, n);
+            ++n;
         }
 
-        // black box using blit
-        std::vector<int> box(40 * 40, 0);
-        m_vga.blit(box, SDL_Rect{40, 40, 40, 40});
+        m_vga.set_palette(colors);
+
+        // generate XOR pattern
+        for(int y{0}; y != 200; ++y)
+        {
+            for(int x{0}; x != 320; ++x)
+            {
+                m_vga.set_pixel(x, y, (x ^ y) & 255);
+            }
+        }
 
         while(m_running)
         {
@@ -64,4 +66,4 @@ class vga_test
 };
 
 
-#endif  // VGA_TEST_HPP
+#endif  // XOR_DEMO_HPP
