@@ -8,6 +8,7 @@
 
 #include <SDL2/SDL.h>
 
+#include <span>
 #include <vector>
 
 
@@ -45,14 +46,14 @@ class vga
     /// \brief Blit a full size indexed image to the screen.
     /// \param source indexed pixels
     ////////////////////////////////////////////////////////////////////////////
-    void blit(const std::vector<int>& source);
+    void blit(std::span<const int> source);
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Blit an indexed image to the screen.
     /// \param source indexed pixels
     /// \param rect position and dimension data
     ////////////////////////////////////////////////////////////////////////////
-    void blit(const std::vector<int>& source, const SDL_Rect& rect);
+    void blit(std::span<const int> source, const SDL_Rect& rect);
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Get a color from the palette.
@@ -77,7 +78,7 @@ class vga
     /// \brief Set the entire color palette.
     /// \param colors vector of 256 ARGB formatted colors
     ////////////////////////////////////////////////////////////////////////////
-    void set_palette(const std::vector<color_t>& colors);
+    void set_palette(std::span<const color_t> colors);
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Set a pixel to an indexed color.

@@ -12,6 +12,7 @@
 #include <array>
 #include <cstddef>
 #include <map>
+#include <span>
 #include <stdexcept>
 #include <vector>
 
@@ -72,20 +73,23 @@ vga::~vga()
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void vga::blit(const std::vector<int>& source)
+void vga::blit(std::span<const int> source)
 {
-    std::copy(source.begin(), source.end(), m_ram.begin());
+    std::copy(source.cbegin(), source.cend(), m_ram.begin());
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void vga::blit(const std::vector<int>& source, const SDL_Rect& rect)
+void vga::blit(const std::span<const int> source, const SDL_Rect& rect)
 {
-    for(int line{0}, source_offset{0}; line != rect.h; ++line)
+    auto source_it = source.begin();
+    auto ram_it = m_ram.begin() + (rect.x + m_width * rect.y);
+
+    for(int y{0}; y != rect.h; ++y)
     {
-        auto ram_offset = rect.x + m_width * (rect.y + line);
-        std::copy_n(source.begin() + source_offset, rect.w, m_ram.begin() + ram_offset);
-        source_offset += rect.w;
+        std::copy_n(source_it, rect.w, ram_it);
+        source_it += rect.w;
+        ram_it += m_width;
     }
 }
 
@@ -100,7 +104,7 @@ vga::color_t vga::get_color(const int index) const
 ////////////////////////////////////////////////////////////////////////////////
 void vga::reset_palette()
 {
-    auto it = std::copy(video::ega_palette.begin(), video::ega_palette.end(), m_palette.begin());
+    auto it = std::copy(video::ega_palette.cbegin(), video::ega_palette.cend(), m_palette.begin());
     std::fill(it, m_palette.end(), make_color(0, 0, 0));
 }
 
@@ -113,9 +117,9 @@ void vga::set_color(const int index, const color_t color)
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void vga::set_palette(const std::vector<color_t>& colors)
+void vga::set_palette(std::span<const color_t> colors)
 {
-    std::copy(colors.begin(), colors.end(), m_palette.begin());
+    std::copy(colors.cbegin(), colors.cend(), m_palette.begin());
 }
 
 
@@ -130,7 +134,7 @@ void vga::set_pixel(const int x, const int y, const int color_index)
 ////////////////////////////////////////////////////////////////////////////////
 void vga::show()
 {
-    std::transform(m_ram.begin(), m_ram.end(), m_pixels.begin(),[&](auto i)
+    std::transform(m_ram.cbegin(), m_ram.cend(), m_pixels.begin(),[&](auto i)
     {
         return m_palette.at(static_cast<std::size_t>(i));
     });
