@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <array>
 #include <cstddef>
+#include <iterator>
 #include <map>
 #include <span>
 #include <stdexcept>
@@ -82,14 +83,13 @@ void vga::blit(std::span<const int> source)
 ////////////////////////////////////////////////////////////////////////////////
 void vga::blit(const std::span<const int> source, const SDL_Rect& rect)
 {
-    auto source_it = source.begin();
-    auto ram_it = m_ram.begin() + (rect.x + m_width * rect.y);
+    const auto ram_origin = rect.x + m_width * rect.y;
+    auto ram_it = std::next(m_ram.begin(), ram_origin);
 
-    for(int y{0}; y != rect.h; ++y)
+    for(auto source_it{source.cbegin()}; source_it < source.cend(); std::advance(source_it, rect.w))
     {
         std::copy_n(source_it, rect.w, ram_it);
-        source_it += rect.w;
-        ram_it += m_width;
+        std::advance(ram_it, m_width);
     }
 }
 
