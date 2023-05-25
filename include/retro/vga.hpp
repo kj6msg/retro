@@ -51,9 +51,10 @@ class vga
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Blit an indexed image to the screen.
     /// \param source indexed pixels
-    /// \param rect position and dimension data
+    /// \param pos position on screen (x, y)
+    /// \param pitch width in pixels
     ////////////////////////////////////////////////////////////////////////////
-    void blit(std::span<const int> source, const SDL_Rect& rect);
+    void blit(std::span<const int> source, const SDL_Point& pos, int w);
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Get a color from the palette.

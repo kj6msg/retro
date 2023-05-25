@@ -23,6 +23,19 @@ namespace retro
 {
 
 ////////////////////////////////////////////////////////////////////////////////
+/// \brief Convert (x,y) coordinate to linear address.
+/// \param x x location
+/// \param y y location
+/// \param width width of a line in pixels
+/// \return linear address of coordinate
+////////////////////////////////////////////////////////////////////////////////
+constexpr std::size_t addr(int x, int y, int width) noexcept
+{
+    return static_cast<std::size_t>(x + width * y);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 vga::vga(const mode video_mode)
 {
     const auto mode = video::modes.at(video_mode);
@@ -74,21 +87,21 @@ vga::~vga()
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void vga::blit(std::span<const int> source)
+void vga::blit(const std::span<const int> source)
 {
     std::copy(source.cbegin(), source.cend(), m_ram.begin());
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void vga::blit(const std::span<const int> source, const SDL_Rect& rect)
+void vga::blit(const std::span<const int> source, const SDL_Point& pos, const int w)
 {
-    const auto ram_origin = rect.x + m_width * rect.y;
-    auto ram_it = std::next(m_ram.begin(), ram_origin);
+    auto ram_it = std::next(m_ram.begin(), addr(pos.x, pos.y, m_width));
 
-    for(auto source_it{source.cbegin()}; source_it < source.cend(); std::advance(source_it, rect.w))
+    for(std::size_t offset{0}; offset < source.size(); offset += static_cast<std::size_t>(w))
     {
-        std::copy_n(source_it, rect.w, ram_it);
+        const auto line = source.subspan(offset, static_cast<std::size_t>(w));
+        std::copy(line.begin(), line.end(), ram_it);
         std::advance(ram_it, m_width);
     }
 }
@@ -117,7 +130,7 @@ void vga::set_color(const int index, const color_t color)
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void vga::set_palette(std::span<const color_t> colors)
+void vga::set_palette(const std::span<const color_t> colors)
 {
     std::copy(colors.cbegin(), colors.cend(), m_palette.begin());
 }
@@ -126,8 +139,7 @@ void vga::set_palette(std::span<const color_t> colors)
 ////////////////////////////////////////////////////////////////////////////////
 void vga::set_pixel(const int x, const int y, const int color_index)
 {
-    const auto addr = static_cast<std::size_t>(x + m_width * y);
-    m_ram.at(addr) = color_index;
+    m_ram.at(addr(x, y, m_width)) = color_index;
 }
 
 
