@@ -7,7 +7,7 @@
 #define XOR_DEMO_HPP
 
 #include <retro/retro.hpp>
-#include <SDL2/SDL.h>
+#include <SDL2/SDL_events.h>
 
 #include <vector>
 
