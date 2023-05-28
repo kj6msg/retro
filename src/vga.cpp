@@ -3,6 +3,7 @@
 // Copyright (c) 2023 Ryan Clarke
 ////////////////////////////////////////////////////////////////////////////////
 
+#include "retro/sprite.hpp"
 #include "retro/vga.hpp"
 #include "video.hpp"
 
@@ -32,6 +33,18 @@ namespace retro
 constexpr std::size_t addr(int x, int y, int width) noexcept
 {
     return static_cast<std::size_t>(x + width * y);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// \brief Convert (x,y) coordinate to linear address.
+/// \param coordinate (x,y) coordinate
+/// \param width width of a line in pixels
+/// \return linear address of coordinate
+////////////////////////////////////////////////////////////////////////////////
+constexpr std::size_t addr(const SDL_Point& coordinate, int width) noexcept
+{
+    return static_cast<std::size_t>(coordinate.x + width * coordinate.y);
 }
 
 
@@ -94,14 +107,15 @@ void vga::blit(const std::span<const int> source)
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void vga::blit(const std::span<const int> source, const SDL_Point& pos, const int w)
+void vga::blit(const sprite& source)
 {
-    auto ram_it = std::next(m_ram.begin(), addr(pos.x, pos.y, m_width));
+    const std::span<const int> pixels{source.m_texture};
+    auto ram_it = std::next(m_ram.begin(), addr(source.m_position, source.m_width));
 
-    for(std::size_t offset{0}; offset < source.size(); offset += static_cast<std::size_t>(w))
+    for(std::size_t offset{0}; offset != pixels.size(); offset += static_cast<std::size_t>(source.m_width))
     {
-        const auto line = source.subspan(offset, static_cast<std::size_t>(w));
-        std::copy(line.begin(), line.end(), ram_it);
+        const auto line = pixels.subspan(offset, static_cast<std::size_t>(source.m_width));
+        std::copy(line.cbegin(), line.cend(), ram_it);
         std::advance(ram_it, m_width);
     }
 }
@@ -140,6 +154,13 @@ void vga::set_palette(const std::span<const color_t> colors)
 void vga::set_pixel(const int x, const int y, const int color_index)
 {
     m_ram.at(addr(x, y, m_width)) = color_index;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+void vga::set_pixel(const SDL_Point& position, const int color_index)
+{
+    m_ram.at(addr(position, m_width)) = color_index;
 }
 
 

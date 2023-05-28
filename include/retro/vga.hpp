@@ -6,15 +6,24 @@
 #ifndef VGA_HPP
 #define VGA_HPP
 
-#include <SDL2/SDL.h>
+#include <SDL2/SDL_rect.h>
+#include <SDL2/SDL_stdinc.h>
 
 #include <span>
 #include <vector>
 
 
 ////////////////////////////////////////////////////////////////////////////////
+struct SDL_Window;
+struct SDL_Renderer;
+struct SDL_Texture;
+
+
+////////////////////////////////////////////////////////////////////////////////
 namespace retro
 {
+
+class sprite;
 
 ////////////////////////////////////////////////////////////////////////////////
 class vga
@@ -49,12 +58,10 @@ class vga
     void blit(std::span<const int> source);
 
     ////////////////////////////////////////////////////////////////////////////
-    /// \brief Blit an indexed image to the screen.
-    /// \param source indexed pixels
-    /// \param pos position on screen (x, y)
-    /// \param pitch width in pixels
+    /// \brief Blit a sprite to the screen
+    /// \param source source sprite
     ////////////////////////////////////////////////////////////////////////////
-    void blit(std::span<const int> source, const SDL_Point& pos, int w);
+    void blit(const sprite& source);
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Get a color from the palette.
@@ -90,10 +97,18 @@ class vga
     void set_pixel(int x, int y, int color_index);
 
     ////////////////////////////////////////////////////////////////////////////
+    /// \brief Set a pixel to an indexed color.
+    /// \param position position of the pixel
+    /// \param color_index indexed color (0-255)
+    ////////////////////////////////////////////////////////////////////////////
+    void set_pixel(const SDL_Point& position, int color_index);
+
+    ////////////////////////////////////////////////////////////////////////////
     /// \brief Show the screen.
     ////////////////////////////////////////////////////////////////////////////
     void show();
 
+    vga() = delete;
     vga(const vga&) = delete;
     vga(vga&&) = delete;
     vga& operator=(const vga&) = delete;
