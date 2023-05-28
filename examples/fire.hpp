@@ -13,6 +13,7 @@
 #include <cmath>
 #include <cstddef>
 #include <random>
+#include <span>
 #include <vector>
 
 
@@ -23,37 +24,37 @@ class fire
     fire() : m_sdl2(retro::sdl2::subsystem::video), m_vga(retro::vga::mode::vga_13h)
     {
         // generate palette
-        std::vector<retro::vga::color_t> colors(256);
+        std::vector<retro::vga::color_t> palette(256);
+        const std::span<retro::vga::color_t> colors{palette};
 
-        // black (0, 0, 0) to red (128, 0, 0)
-        auto it = colors.begin();
-        it = std::for_each_n(it, 33, [r = int(0)](auto &c) mutable
+        // 33 colors: black (0, 0, 0) to red (128, 0, 0)
+        for(int r{0}; auto& c : colors.subspan(0, 33))
         {
             c = retro::make_color(r, 0, 0);
             r += 4;
-        });
+        }
 
-        // red (128, 0, 0) to orange (192, 128, 0)
-        it = std::for_each_n(it, 32, [r = int(128), g = int(0)](auto &c) mutable
+        // 32 colors: red (128, 0, 0) to orange (192, 128, 0)
+        for(int r{128}, g{0}; auto& c : colors.subspan(33, 32))
         {
             c = retro::make_color(r, g, 0);
             r += 2;
             g += 4;
-        });
+        }
 
-        // orange (192, 128, 0) to yellow (192, 190, 0)
-        it = std::for_each_n(it, 31, [g = int(128)](auto &c) mutable
+        // 31 colors: orange (192, 128, 0) to yellow (192, 190, 0)
+        for(int g{128}; auto& c : colors.subspan(65, 31))
         {
             c = retro::make_color(192, g, 0);
             g += 2;
-        });
+        }
 
-        // yellow (192, 192, 0) to white (255, 255, 255)
+        // 160 colors: yellow (192, 192, 0) to white (255, 255, 255)
         // Linear interpolation: c = c0 + (c1 - c0) * (i - i0) / (i1 - i0)
         //      red   = 192 + (255 - 192) * (i - 96) / (255 - 96)
         //      green = 192 + (255 - 192) * (i - 96) / (255 - 96)
         //      blue  = 0 + (255 - 0) * (i - 96) / (255 - 96)
-        std::for_each_n(it, 160, [n = int(96)](auto &c) mutable
+        for(int n{96}; auto& c : colors.subspan(96, 160))
         {
             const auto t = (static_cast<float>(n) - 96.0f) / (255.0f - 96.0f);
             const auto r = static_cast<int>(std::lerp(192.0f, 255.0f, t));
@@ -62,7 +63,7 @@ class fire
 
             c = retro::make_color(r, g, b);
             ++n;
-        });
+        }
 
         m_vga.set_palette(colors);
 
