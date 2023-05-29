@@ -6,7 +6,9 @@
 #ifndef RETRO_HPP
 #define RETRO_HPP
 
+#include <retro/color.hpp>
 #include <retro/sdl2.hpp>
+#include <retro/sprite.hpp>
 #include <retro/vga.hpp>
 
 

@@ -6,6 +6,7 @@
 #ifndef VIDEO_HPP
 #define VIDEO_HPP
 
+#include "retro/color.hpp"
 #include "retro/vga.hpp"
 
 #include <array>
@@ -19,24 +20,24 @@ namespace video
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-static constexpr std::array<vga::color_t, 16> ega_palette
+static const std::array<color, 16> ega_palette
 {
-    make_color(0, 0, 0),        // black
-    make_color(0, 0, 170),      // blue
-    make_color(0, 170, 0),      // green
-    make_color(0, 170, 170),    // cyan
-    make_color(170, 0, 0),      // red
-    make_color(170, 0, 170),    // magenta
-    make_color(170, 85, 0),     // brown
-    make_color(170, 170, 170),  // white
-    make_color(85, 85, 85),     // dark gray
-    make_color(85, 85, 255),    // bright blue
-    make_color(85, 255, 85),    // bright green
-    make_color(85, 255, 255),   // bright cyan
-    make_color(255, 85, 85),    // bright red
-    make_color(255, 85, 255),   // bright magenta
-    make_color(255, 255, 85),   // bright yellow
-    make_color(255, 255, 255)   // bright white
+    color(0, 0, 0),        // black
+    color(0, 0, 170),      // blue
+    color(0, 170, 0),      // green
+    color(0, 170, 170),    // cyan
+    color(170, 0, 0),      // red
+    color(170, 0, 170),    // magenta
+    color(170, 85, 0),     // brown
+    color(170, 170, 170),  // white
+    color(85, 85, 85),     // dark gray
+    color(85, 85, 255),    // bright blue
+    color(85, 255, 85),    // bright green
+    color(85, 255, 255),   // bright cyan
+    color(255, 85, 85),    // bright red
+    color(255, 85, 255),   // bright magenta
+    color(255, 255, 85),   // bright yellow
+    color(255, 255, 255)   // bright white
 };
 
 

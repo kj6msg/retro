@@ -19,16 +19,16 @@
 class plasma
 {
   public:
-    plasma() : m_colors(256), m_sdl2(retro::sdl2::subsystem::video), m_vga(retro::vga::mode::vga_13h)
+    plasma() : m_palette(256), m_sdl2(retro::sdl2::subsystem::video), m_vga(retro::vga::mode::vga_13h)
     {
         // generate palette
-        auto it = std::for_each_n(m_colors.begin(), 128, [n = int(0)](auto &c) mutable
+        auto it = std::for_each_n(m_palette.begin(), 128, [n = retro::color{}](auto &c) mutable
         {
-            c = retro::make_color(n, n, n);
+            c = n;
             n += 2;
         });
-        std::reverse_copy(m_colors.begin(), it, it);
-        m_vga.set_palette(m_colors);
+        std::reverse_copy(m_palette.begin(), it, it);
+        m_vga.set_palette(m_palette);
 
         // generate plasma
         constexpr int width{320};
@@ -66,8 +66,8 @@ class plasma
                 }
             }
 
-            std::rotate(m_colors.begin(), m_colors.begin() + 1, m_colors.end());
-            m_vga.set_palette(m_colors);
+            std::rotate(m_palette.begin(), m_palette.begin() + 1, m_palette.end());
+            m_vga.set_palette(m_palette);
             m_vga.show();
         }
     };
@@ -75,7 +75,7 @@ class plasma
   private:
     bool m_running{false};
 
-    std::vector<retro::vga::color_t> m_colors;
+    std::vector<retro::color> m_palette;
 
     retro::sdl2 m_sdl2;
     retro::vga m_vga;

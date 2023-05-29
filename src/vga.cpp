@@ -122,7 +122,7 @@ void vga::blit(const sprite& source)
 
 
 ////////////////////////////////////////////////////////////////////////////////
-vga::color_t vga::get_color(const int index) const
+color vga::get_color(const int index) const
 {
     return m_palette.at(static_cast<std::size_t>(index));
 }
@@ -132,19 +132,19 @@ vga::color_t vga::get_color(const int index) const
 void vga::reset_palette()
 {
     auto it = std::copy(video::ega_palette.cbegin(), video::ega_palette.cend(), m_palette.begin());
-    std::fill(it, m_palette.end(), make_color(0, 0, 0));
+    std::fill(it, m_palette.end(), color());
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void vga::set_color(const int index, const color_t color)
+void vga::set_color(const int index, const color& c)
 {
-    m_palette.at(static_cast<std::size_t>(index)) = color;
+    m_palette.at(static_cast<std::size_t>(index)) = c;
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void vga::set_palette(const std::span<const color_t> colors)
+void vga::set_palette(const std::span<const color> colors)
 {
     std::copy(colors.cbegin(), colors.cend(), m_palette.begin());
 }
@@ -169,7 +169,7 @@ void vga::show()
 {
     std::transform(m_ram.cbegin(), m_ram.cend(), m_pixels.begin(),[&](auto i)
     {
-        return m_palette.at(static_cast<std::size_t>(i));
+        return m_palette.at(static_cast<std::size_t>(i)).to_argb();
     });
 
     const int pitch = m_width * sizeof(color_t);

@@ -6,6 +6,8 @@
 #ifndef VGA_HPP
 #define VGA_HPP
 
+#include <retro/color.hpp>
+
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_stdinc.h>
 
@@ -66,9 +68,9 @@ class vga
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Get a color from the palette.
     /// \param index palette index (0-255)
-    /// \return ARGB formatted color
+    /// \return color
     ////////////////////////////////////////////////////////////////////////////
-    [[nodiscard]] color_t get_color(int index) const;
+    [[nodiscard]] color get_color(int index) const;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Reset to the default palette.
@@ -80,13 +82,13 @@ class vga
     /// \param index palette index (0-255)
     /// \param color ARGB formatted color
     ////////////////////////////////////////////////////////////////////////////
-    void set_color(int index, color_t color);
+    void set_color(int index, const color& c);
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Set the entire color palette.
     /// \param colors vector of 256 ARGB formatted colors
     ////////////////////////////////////////////////////////////////////////////
-    void set_palette(std::span<const color_t> colors);
+    void set_palette(std::span<const color> colors);
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Set a pixel to an indexed color.
@@ -124,24 +126,9 @@ class vga
     SDL_Texture*  m_texture{nullptr};
 
     std::vector<int> m_ram;
-    std::vector<color_t> m_palette;
-    std::vector<color_t> m_pixels;
+    std::vector<color> m_palette;
+    std::vector<color::argb_t> m_pixels;
 };
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// \brief Create an ARGB formatted color from red, green, blue values.
-/// \param red red value (0-255)
-/// \param green green value (0-255)
-/// \param blue blue value (0-255)
-/// \return ARGB formatted color
-////////////////////////////////////////////////////////////////////////////////
-[[nodiscard]] constexpr vga::color_t make_color(const int red, const int green, const int blue) noexcept
-{
-    constexpr int alpha{255};
-    const auto color = (alpha << 24) | (red << 16) | (green << 8) | blue;
-    return static_cast<vga::color_t>(color);
-}
 
 }   // retro
 

@@ -25,15 +25,15 @@ class xor_demo
     void run()
     {
         // generate palette
-        std::vector<retro::vga::color_t> colors(256);
+        std::vector<retro::color> palette(256);
 
-        for(int n{0}; auto &c : colors)
+        for(retro::color n; auto &c : palette)
         {
-            c = retro::make_color(n, n, n);
+            c = n;
             ++n;
         }
 
-        m_vga.set_palette(colors);
+        m_vga.set_palette(palette);
 
         // generate XOR pattern
         for(int y{0}; y != 200; ++y)
