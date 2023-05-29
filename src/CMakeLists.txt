@@ -14,6 +14,7 @@ set_target_properties(retro PROPERTIES
 )
 
 target_sources(retro PRIVATE
+    color.cpp
     sdl2.cpp
     sprite.cpp
     vga.cpp
@@ -24,6 +25,7 @@ target_sources(retro PUBLIC
     FILE_SET HEADERS
     BASE_DIRS ${PROJECT_SOURCE_DIR}/include
     FILES
+    ${PROJECT_SOURCE_DIR}/include/retro/color.hpp
     ${PROJECT_SOURCE_DIR}/include/retro/retro.hpp
     ${PROJECT_SOURCE_DIR}/include/retro/sdl2.hpp
     ${PROJECT_SOURCE_DIR}/include/retro/sprite.hpp
