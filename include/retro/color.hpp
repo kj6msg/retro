@@ -18,6 +18,7 @@ class color
 {
   public:
     using argb_t = std::uint32_t;
+    using channel_t = std::uint8_t;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Default constructor.
@@ -30,7 +31,7 @@ class color
     /// \param g green value (0-255)
     /// \param b blue value (0-255)
     ////////////////////////////////////////////////////////////////////////////
-    color(std::uint8_t r, std::uint8_t g, std::uint8_t b) noexcept;
+    color(channel_t r, channel_t g, channel_t b) noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Create color from ARGB value.
@@ -80,7 +81,7 @@ class color
     /// \param b right operand
     /// \return result of a + b
     ////////////////////////////////////////////////////////////////////////////
-    color operator+(std::uint8_t b) const noexcept;
+    color operator+(channel_t b) const noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Overload of the binary - operator.
@@ -94,7 +95,7 @@ class color
     /// \param b right operand
     /// \return result of a - b
     ////////////////////////////////////////////////////////////////////////////
-    color operator-(std::uint8_t b) const noexcept;
+    color operator-(channel_t b) const noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Overload of the binary * operator.
@@ -108,7 +109,7 @@ class color
     /// \param b right operand
     /// \return result of a * b
     ////////////////////////////////////////////////////////////////////////////
-    color operator*(std::uint8_t b) const noexcept;
+    color operator*(channel_t b) const noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Overload of the += assignment operator.
@@ -122,7 +123,7 @@ class color
     /// \param b right operand
     /// \return result of a += b
     ////////////////////////////////////////////////////////////////////////////
-    color& operator+=(std::uint8_t b) noexcept;
+    color& operator+=(channel_t b) noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Overload of the -= assignment operator.
@@ -136,7 +137,7 @@ class color
     /// \param b right operand
     /// \return result of a -= b
     ////////////////////////////////////////////////////////////////////////////
-    color& operator-=(std::uint8_t b) noexcept;
+    color& operator-=(channel_t b) noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Overload of prefix increment operator.
@@ -163,9 +164,9 @@ class color
     color operator--(int) noexcept;
 
   private:
-    std::uint8_t m_r{0u};
-    std::uint8_t m_g{0u};
-    std::uint8_t m_b{0u};
+    channel_t m_r{};
+    channel_t m_g{};
+    channel_t m_b{};
 };
 
 
@@ -176,9 +177,9 @@ class color
 /// \param b blue value (0-255)
 /// \return 32-bit ARGB value
 ////////////////////////////////////////////////////////////////////////////////
-[[nodiscard]] constexpr color::argb_t make_argb(const std::uint8_t r, const std::uint8_t g, const std::uint8_t b) noexcept
+[[nodiscard]] constexpr color::argb_t make_argb(const color::channel_t r, const color::channel_t g, const color::channel_t b) noexcept
 {
-    constexpr std::uint8_t a{255u};
+    constexpr color::channel_t a{255u};
 
     auto argb = static_cast<color::argb_t>(b);
     argb |= static_cast<color::argb_t>(g) << 8u;

@@ -30,7 +30,7 @@ namespace retro
 /// \param width width of a line in pixels
 /// \return linear address of coordinate
 ////////////////////////////////////////////////////////////////////////////////
-constexpr std::size_t addr(int x, int y, int width) noexcept
+[[nodiscard]] constexpr std::size_t addr(int x, int y, int width) noexcept
 {
     return static_cast<std::size_t>(x + width * y);
 }
@@ -42,7 +42,7 @@ constexpr std::size_t addr(int x, int y, int width) noexcept
 /// \param width width of a line in pixels
 /// \return linear address of coordinate
 ////////////////////////////////////////////////////////////////////////////////
-constexpr std::size_t addr(const SDL_Point& coordinate, int width) noexcept
+[[nodiscard]] constexpr std::size_t addr(const SDL_Point& coordinate, int width) noexcept
 {
     return static_cast<std::size_t>(coordinate.x + width * coordinate.y);
 }
@@ -58,7 +58,6 @@ vga::vga(const mode video_mode)
 
     m_ram.resize(m_width * m_height);
     m_palette.resize(m_num_colors);
-    m_pixels.resize(m_width * m_height);
 
     SDL_CreateWindowAndRenderer(0, 0, SDL_WINDOW_FULLSCREEN_DESKTOP, &m_window, &m_renderer);
 
@@ -100,7 +99,7 @@ vga::~vga()
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void vga::blit(const std::span<const int> source)
+void vga::blit(const std::span<const pixel_t> source)
 {
     std::copy(source.cbegin(), source.cend(), m_ram.begin());
 }
@@ -109,7 +108,7 @@ void vga::blit(const std::span<const int> source)
 ////////////////////////////////////////////////////////////////////////////////
 void vga::blit(const sprite& source)
 {
-    const std::span<const int> pixels{source.m_texture};
+    const std::span<const pixel_t> pixels{source.m_texture};
     auto ram_it = std::next(m_ram.begin(), addr(source.m_position, source.m_width));
 
     for(std::size_t offset{0}; offset != pixels.size(); offset += static_cast<std::size_t>(source.m_width))
@@ -151,14 +150,14 @@ void vga::set_palette(const std::span<const color> colors)
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void vga::set_pixel(const int x, const int y, const int color_index)
+void vga::set_pixel(const int x, const int y, const pixel_t color_index)
 {
     m_ram.at(addr(x, y, m_width)) = color_index;
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void vga::set_pixel(const SDL_Point& position, const int color_index)
+void vga::set_pixel(const SDL_Point& position, const pixel_t color_index)
 {
     m_ram.at(addr(position, m_width)) = color_index;
 }
@@ -167,13 +166,15 @@ void vga::set_pixel(const SDL_Point& position, const int color_index)
 ////////////////////////////////////////////////////////////////////////////////
 void vga::show()
 {
-    std::transform(m_ram.cbegin(), m_ram.cend(), m_pixels.begin(),[&](auto i)
+    std::vector<color::argb_t> pixels(m_width * m_height);
+
+    std::transform(m_ram.cbegin(), m_ram.cend(), pixels.begin(),[&](auto i)
     {
         return m_palette.at(static_cast<std::size_t>(i)).to_argb();
     });
 
-    const int pitch = m_width * sizeof(color_t);
-    SDL_UpdateTexture(m_texture, nullptr, m_pixels.data(), pitch);
+    const int pitch = m_width * sizeof(color::argb_t);
+    SDL_UpdateTexture(m_texture, nullptr, pixels.data(), pitch);
 
     SDL_RenderClear(m_renderer);
     SDL_RenderCopy(m_renderer, m_texture, nullptr, nullptr);

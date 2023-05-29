@@ -6,6 +6,8 @@
 #ifndef SPRITE_HPP
 #define SPRITE_HPP
 
+#include <retro/vga.hpp>
+
 #include <SDL2/SDL_rect.h>
 
 #include <optional>
@@ -29,7 +31,7 @@ class sprite
     /// \param height height in pixels
     /// \param pixels pixel data [optional]
     ////////////////////////////////////////////////////////////////////////////
-    sprite(int width, int height, const std::optional<std::span<const int>>& pixels = std::nullopt);
+    sprite(int width, int height, const std::optional<std::span<const vga::pixel_t>>& pixels = std::nullopt);
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Copy constructor.
@@ -84,7 +86,7 @@ class sprite
     int m_height{};
     SDL_Point m_position{};
 
-    std::vector<int> m_texture;
+    std::vector<vga::pixel_t> m_texture;
 };
 
 }   // retro

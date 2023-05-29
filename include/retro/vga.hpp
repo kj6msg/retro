@@ -6,11 +6,7 @@
 #ifndef VGA_HPP
 #define VGA_HPP
 
-#include <retro/color.hpp>
-
-#include <SDL2/SDL_rect.h>
-#include <SDL2/SDL_stdinc.h>
-
+#include <cstdint>
 #include <span>
 #include <vector>
 
@@ -18,6 +14,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 struct SDL_Window;
 struct SDL_Renderer;
+struct SDL_Rect;
+struct SDL_Point;
 struct SDL_Texture;
 
 
@@ -25,13 +23,18 @@ struct SDL_Texture;
 namespace retro
 {
 
+////////////////////////////////////////////////////////////////////////////////
+class color;
 class sprite;
+
 
 ////////////////////////////////////////////////////////////////////////////////
 class vga
 {
   public:
-    using color_t = Uint32;
+    using palette_t = std::vector<color>;
+    using pixel_t = std::uint8_t;
+    using vram_t = std::vector<pixel_t>;
 
     enum class mode
     {
@@ -57,7 +60,7 @@ class vga
     /// \brief Blit a full size indexed image to the screen.
     /// \param source indexed pixels
     ////////////////////////////////////////////////////////////////////////////
-    void blit(std::span<const int> source);
+    void blit(std::span<const pixel_t> source);
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Blit a sprite to the screen
@@ -96,14 +99,14 @@ class vga
     /// \param y the y location of the pixel
     /// \param color_index indexed color (0-255)
     ////////////////////////////////////////////////////////////////////////////
-    void set_pixel(int x, int y, int color_index);
+    void set_pixel(int x, int y, pixel_t color_index);
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Set a pixel to an indexed color.
     /// \param position position of the pixel
     /// \param color_index indexed color (0-255)
     ////////////////////////////////////////////////////////////////////////////
-    void set_pixel(const SDL_Point& position, int color_index);
+    void set_pixel(const SDL_Point& position, pixel_t color_index);
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Show the screen.
@@ -125,9 +128,8 @@ class vga
     SDL_Renderer* m_renderer{nullptr};
     SDL_Texture*  m_texture{nullptr};
 
-    std::vector<int> m_ram;
-    std::vector<color> m_palette;
-    std::vector<color::argb_t> m_pixels;
+    vram_t m_ram;
+    palette_t m_palette;
 };
 
 }   // retro

@@ -25,12 +25,12 @@ class xor_demo
     void run()
     {
         // generate palette
-        std::vector<retro::color> palette(256);
+        retro::vga::palette_t palette(256);
 
-        for(retro::color n; auto &c : palette)
+        for(retro::color c; auto &color : palette)
         {
-            c = n;
-            ++n;
+            color = c;
+            ++c;
         }
 
         m_vga.set_palette(palette);

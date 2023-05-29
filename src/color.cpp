@@ -5,8 +5,6 @@
 
 #include "retro/color.hpp"
 
-#include <cstdint>
-
 
 ////////////////////////////////////////////////////////////////////////////////
 namespace retro
@@ -19,7 +17,7 @@ color::color() noexcept
 
 
 ////////////////////////////////////////////////////////////////////////////////
-color::color(const std::uint8_t r, const std::uint8_t g, const std::uint8_t b) noexcept : m_r(r), m_g(g), m_b(b)
+color::color(const channel_t r, const channel_t g, const channel_t b) noexcept : m_r(r), m_g(g), m_b(b)
 {
 }
 
@@ -27,9 +25,9 @@ color::color(const std::uint8_t r, const std::uint8_t g, const std::uint8_t b) n
 ////////////////////////////////////////////////////////////////////////////////
 color::color(const color::argb_t argb) noexcept
 {
-    m_r = static_cast<std::uint8_t>((argb & 0xff0000u) >> 16u);
-    m_g = static_cast<std::uint8_t>((argb & 0xff00u) >> 8u);
-    m_b = static_cast<std::uint8_t>(argb & 0xffu);
+    m_r = static_cast<channel_t>((argb & 0xff0000u) >> 16u);
+    m_g = static_cast<channel_t>((argb & 0xff00u) >> 8u);
+    m_b = static_cast<channel_t>(argb & 0xffu);
 }
 
 
@@ -54,7 +52,7 @@ color color::operator+(const color& b) const noexcept
 
 
 ////////////////////////////////////////////////////////////////////////////////
-color color::operator+(const std::uint8_t b) const noexcept
+color color::operator+(const channel_t b) const noexcept
 {
     color temp;
 
@@ -80,7 +78,7 @@ color color::operator-(const color& b) const noexcept
 
 
 ////////////////////////////////////////////////////////////////////////////////
-color color::operator-(const std::uint8_t b) const noexcept
+color color::operator-(const channel_t b) const noexcept
 {
     color temp;
 
@@ -106,7 +104,7 @@ color color::operator*(const color& b) const noexcept
 
 
 ////////////////////////////////////////////////////////////////////////////////
-color color::operator*(const std::uint8_t b) const noexcept
+color color::operator*(const channel_t b) const noexcept
 {
     color temp;
 
@@ -130,7 +128,7 @@ color& color::operator+=(const color& b) noexcept
 
 
 ////////////////////////////////////////////////////////////////////////////////
-color& color::operator+=(const std::uint8_t b) noexcept
+color& color::operator+=(const channel_t b) noexcept
 {
     m_r += b;
     m_g += b;
@@ -152,7 +150,7 @@ color& color::operator-=(const color& b) noexcept
 
 
 ////////////////////////////////////////////////////////////////////////////////
-color& color::operator-=(const std::uint8_t b) noexcept
+color& color::operator-=(const channel_t b) noexcept
 {
     m_r -= b;
     m_g -= b;
