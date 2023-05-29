@@ -3,8 +3,8 @@
 // Copyright (c) 2023 Ryan Clarke
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef COLOR_HPP
-#define COLOR_HPP
+#ifndef RETRO_COLOR_HPP
+#define RETRO_COLOR_HPP
 
 #include <cstdint>
 
@@ -192,4 +192,4 @@ class color
 }   // retro
 
 
-#endif  // COLOR_HPP
+#endif  // RETRO_COLOR_HPP

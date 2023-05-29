@@ -3,8 +3,8 @@
 // Copyright (c) 2023 Ryan Clarke
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef VGA_HPP
-#define VGA_HPP
+#ifndef RETRO_VGA_HPP
+#define RETRO_VGA_HPP
 
 #include <cstdint>
 #include <span>
@@ -135,4 +135,4 @@ class vga
 }   // retro
 
 
-#endif  // VGA_HPP
+#endif  // RETRO_VGA_HPP

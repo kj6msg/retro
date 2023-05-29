@@ -3,8 +3,8 @@
 // Copyright (c) 2023 Ryan Clarke
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef SPRITE_HPP
-#define SPRITE_HPP
+#ifndef RETRO_SPRITE_HPP
+#define RETRO_SPRITE_HPP
 
 #include <retro/vga.hpp>
 
@@ -92,4 +92,4 @@ class sprite
 }   // retro
 
 
-#endif  // SPRITE_HPP
+#endif  // RETRO_SPRITE_HPP

@@ -3,8 +3,8 @@
 // Copyright (c) 2023 Ryan Clarke
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef SDL2_HPP
-#define SDL2_HPP
+#ifndef RETRO_SDL2_HPP
+#define RETRO_SDL2_HPP
 
 #include <SDL2/SDL.h>
 
@@ -91,4 +91,4 @@ public:
 
 }   // retro
 
-#endif  // SDL2_HPP
+#endif  // RETRO_SDL2_HPP
