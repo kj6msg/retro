@@ -86,7 +86,6 @@ class sprite
   private:
     int m_width{};
     int m_height{};
-    // SDL_Point m_position{};
     int m_x{};
     int m_y{};
 
