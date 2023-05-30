@@ -18,7 +18,6 @@ target_sources(retro PRIVATE
     sdl2.cpp
     sprite.cpp
     vga.cpp
-    video.hpp
 )
 
 target_sources(retro PUBLIC

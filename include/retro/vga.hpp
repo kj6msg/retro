@@ -12,11 +12,10 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////
-struct SDL_Window;
-struct SDL_Renderer;
-struct SDL_Rect;
 struct SDL_Point;
+struct SDL_Renderer;
 struct SDL_Texture;
+struct SDL_Window;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -33,8 +32,8 @@ class vga
 {
   public:
     using palette_t = std::vector<color>;
-    using pixel_t = std::uint8_t;
-    using vram_t = std::vector<pixel_t>;
+    using pixel_t   = std::uint8_t;
+    using vram_t    = std::vector<pixel_t>;
 
     enum class mode
     {
@@ -128,7 +127,7 @@ class vga
     SDL_Renderer* m_renderer{nullptr};
     SDL_Texture*  m_texture{nullptr};
 
-    vram_t m_ram;
+    vram_t m_vram;
     palette_t m_palette;
 };
 
