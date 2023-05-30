@@ -8,11 +8,13 @@
 
 #include <retro/vga.hpp>
 
-#include <SDL2/SDL_rect.h>
-
 #include <optional>
 #include <span>
 #include <vector>
+
+
+////////////////////////////////////////////////////////////////////////////////
+struct SDL_Point;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -84,7 +86,9 @@ class sprite
   private:
     int m_width{};
     int m_height{};
-    SDL_Point m_position{};
+    // SDL_Point m_position{};
+    int m_x{};
+    int m_y{};
 
     std::vector<vga::pixel_t> m_texture;
 };

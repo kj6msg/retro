@@ -19,7 +19,8 @@ namespace retro
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-sprite::sprite(const int width, const int height, const std::optional<std::span<const vga::pixel_t>>& pixels) : m_width(width), m_height(height)
+sprite::sprite(const int width, const int height, const std::optional<std::span<const vga::pixel_t>>& pixels)
+    : m_width(width), m_height(height)
 {
     if(pixels.has_value())
     {
@@ -37,30 +38,31 @@ sprite::sprite(const int width, const int height, const std::optional<std::span<
 ////////////////////////////////////////////////////////////////////////////////
 void sprite::move(const int dx, const int dy) noexcept
 {
-    m_position.x += dx;
-    m_position.y += dy;
+    m_x += dx;
+    m_y += dy;
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 void sprite::position(const int x, const int y) noexcept
 {
-    m_position.x = x;
-    m_position.y = y;
+    m_x = x;
+    m_y = y;
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 void sprite::position(const SDL_Point& position) noexcept
 {
-    m_position = position;
+    m_x = position.x;
+    m_y = position.y;
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 SDL_Point sprite::position() const noexcept
 {
-    return m_position;
+    return SDL_Point{m_x, m_y};
 }
 
 
