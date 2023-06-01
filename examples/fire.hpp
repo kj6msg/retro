@@ -12,10 +12,8 @@
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
-#include <cstdint>
 #include <random>
 #include <span>
-#include <vector>
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -29,24 +27,24 @@ class fire
         const std::span<retro::color> colors{palette};
 
         // 33 colors: black (0, 0, 0) to red (128, 0, 0)
-        for(retro::color c; auto& color : colors.subspan(0, 33))
+        for(retro::color c, inc(4, 0, 0); auto& color : colors.subspan(0, 33))
         {
             color = c;
-            c += retro::color(4, 0, 0);
+            c += inc;
         }
 
         // 32 colors: red (128, 0, 0) to orange (192, 128, 0)
-        for(retro::color c(128, 0, 0); auto& color : colors.subspan(33, 32))
+        for(retro::color c(128, 0, 0), inc(2, 4, 0); auto& color : colors.subspan(33, 32))
         {
             color = c;
-            c += retro::color(2, 4, 0);
+            c += inc;
         }
 
         // 31 colors: orange (192, 128, 0) to yellow (192, 190, 0)
-        for(retro::color c(192, 128, 0); auto& color : colors.subspan(65, 31))
+        for(retro::color c(192, 128, 0), inc(0, 2, 0); auto& color : colors.subspan(65, 31))
         {
             color = c;
-            c += retro::color(0, 2, 0);
+            c += inc;
         }
 
         // 160 colors: yellow (192, 192, 0) to white (255, 255, 255)
@@ -57,9 +55,9 @@ class fire
         for(int n{96}; auto& color : colors.subspan(96, 160))
         {
             const auto t = (static_cast<float>(n) - 96.0f) / (255.0f - 96.0f);
-            const auto r = static_cast<std::uint8_t>(std::lerp(192.0f, 255.0f, t));
-            const auto g = static_cast<std::uint8_t>(std::lerp(192.0f, 255.0f, t));
-            const auto b = static_cast<std::uint8_t>(std::lerp(0.0f, 255.0f, t));
+            const auto r = static_cast<retro::color::channel_t>(std::lerp(192.0f, 255.0f, t));
+            const auto g = static_cast<retro::color::channel_t>(std::lerp(192.0f, 255.0f, t));
+            const auto b = static_cast<retro::color::channel_t>(std::lerp(0.0f, 255.0f, t));
 
             color = retro::color(r, g, b);
             ++n;

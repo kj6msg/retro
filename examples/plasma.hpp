@@ -12,7 +12,6 @@
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
-#include <vector>
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -21,13 +20,15 @@ class plasma
   public:
     plasma() : m_sdl2(retro::sdl2::subsystem::video), m_vga(retro::vga::mode::vga_13h), m_palette(256)
     {
-        // generate palette
-        auto it = std::for_each_n(m_palette.begin(), 128, [c = retro::color()](auto &color) mutable
+        // generate palette - sinusoidal black to white to black
+        for(auto n{0.0}; auto &color : m_palette)
         {
-            color = c;
-            c += 2;
-        });
-        std::reverse_copy(m_palette.begin(), it, it);
+            constexpr auto a{256.0};
+            constexpr auto b = M_PI / 255.0;
+            const auto rgb = static_cast<retro::color::channel_t>(a * std::sin(b * n));
+            color = retro::color(rgb, rgb, rgb);
+            n += 1.0;
+        }
         m_vga.set_palette(m_palette);
 
         // generate plasma
