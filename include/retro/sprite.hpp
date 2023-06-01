@@ -48,6 +48,18 @@ class sprite
     sprite& operator=(const sprite& right) = default;
 
     ////////////////////////////////////////////////////////////////////////////
+    /// \brief Move constructor.
+    /// \param other instance to move
+    ////////////////////////////////////////////////////////////////////////////
+    sprite(sprite&& other) = default;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief Overload of assignment operator.
+    /// \param other instance to move
+    ////////////////////////////////////////////////////////////////////////////
+    sprite& operator=(sprite&& other) = default;
+
+    ////////////////////////////////////////////////////////////////////////////
     /// \brief Move sprite by a given offset.
     /// \param dx x offset
     /// \param dy y offset
@@ -80,8 +92,6 @@ class sprite
     [[nodiscard]] std::size_t size() const noexcept;
 
     sprite() = delete;
-    sprite(sprite&&) = delete;
-    sprite& operator=(sprite&&) = delete;
 
   private:
     int m_width{};
