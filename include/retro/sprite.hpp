@@ -99,7 +99,7 @@ class sprite
     int m_x{};
     int m_y{};
 
-    std::vector<vga::pixel_t> m_texture;
+    vga::vram_t m_texture;
 };
 
 }   // retro
