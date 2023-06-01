@@ -20,28 +20,28 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////
-namespace retro
+namespace
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-static const std::array<color, 16> ega_palette
+const std::array<retro::color, 16> ega_palette
 {
-    color(0, 0, 0),        // black
-    color(0, 0, 170),      // blue
-    color(0, 170, 0),      // green
-    color(0, 170, 170),    // cyan
-    color(170, 0, 0),      // red
-    color(170, 0, 170),    // magenta
-    color(170, 85, 0),     // brown
-    color(170, 170, 170),  // white
-    color(85, 85, 85),     // dark gray
-    color(85, 85, 255),    // bright blue
-    color(85, 255, 85),    // bright green
-    color(85, 255, 255),   // bright cyan
-    color(255, 85, 85),    // bright red
-    color(255, 85, 255),   // bright magenta
-    color(255, 255, 85),   // bright yellow
-    color(255, 255, 255)   // bright white
+    retro::color(0, 0, 0),        // black
+    retro::color(0, 0, 170),      // blue
+    retro::color(0, 170, 0),      // green
+    retro::color(0, 170, 170),    // cyan
+    retro::color(170, 0, 0),      // red
+    retro::color(170, 0, 170),    // magenta
+    retro::color(170, 85, 0),     // brown
+    retro::color(170, 170, 170),  // white
+    retro::color(85, 85, 85),     // dark gray
+    retro::color(85, 85, 255),    // bright blue
+    retro::color(85, 255, 85),    // bright green
+    retro::color(85, 255, 255),   // bright cyan
+    retro::color(255, 85, 85),    // bright red
+    retro::color(255, 85, 255),   // bright magenta
+    retro::color(255, 255, 85),   // bright yellow
+    retro::color(255, 255, 255)   // bright white
 };
 
 
@@ -60,19 +60,19 @@ struct vga_mode
     type type;
 };
 
-static constexpr vga_mode vga_03h{720, 400, 16, vga_mode::type::text};
-static constexpr vga_mode ega_0dh{320, 200, 16, vga_mode::type::graphics};
-static constexpr vga_mode ega_0eh{640, 200, 16, vga_mode::type::graphics};
-static constexpr vga_mode vga_12h{640, 480, 16, vga_mode::type::graphics};
-static constexpr vga_mode vga_13h{320, 200, 256, vga_mode::type::graphics};
+constexpr vga_mode vga_03h{720, 400, 16, vga_mode::type::text};
+constexpr vga_mode ega_0dh{320, 200, 16, vga_mode::type::graphics};
+constexpr vga_mode ega_0eh{640, 200, 16, vga_mode::type::graphics};
+constexpr vga_mode vga_12h{640, 480, 16, vga_mode::type::graphics};
+constexpr vga_mode vga_13h{320, 200, 256, vga_mode::type::graphics};
 
-static const std::map<vga::mode, vga_mode> vga_modes
+const std::map<retro::vga::mode, vga_mode> vga_modes
 {
-    {vga::mode::vga_03h, vga_03h},
-    {vga::mode::ega_0dh, ega_0dh},
-    {vga::mode::ega_0eh, ega_0eh},
-    {vga::mode::vga_12h, vga_12h},
-    {vga::mode::vga_13h, vga_13h}
+    {retro::vga::mode::vga_03h, vga_03h},
+    {retro::vga::mode::ega_0dh, ega_0dh},
+    {retro::vga::mode::ega_0eh, ega_0eh},
+    {retro::vga::mode::vga_12h, vga_12h},
+    {retro::vga::mode::vga_13h, vga_13h}
 };
 
 
@@ -83,11 +83,17 @@ static const std::map<vga::mode, vga_mode> vga_modes
 /// \param width width of a line in pixels
 /// \return linear address of coordinate
 ////////////////////////////////////////////////////////////////////////////////
-[[nodiscard]] constexpr std::size_t addr(int x, int y, int width) noexcept
+[[nodiscard]] constexpr std::size_t xy_to_addr(int x, int y, int width) noexcept
 {
     return static_cast<std::size_t>(x + width * y);
 }
 
+}   // unnamed
+
+
+////////////////////////////////////////////////////////////////////////////////
+namespace retro
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 vga::vga(const mode video_mode)
@@ -150,7 +156,7 @@ void vga::blit(const std::span<const pixel_t> source)
 void vga::blit(const sprite& source)
 {
     const std::span<const pixel_t> pixels{source.m_texture};
-    auto ram_it = std::next(m_vram.begin(), addr(source.m_x, source.m_y, source.m_width));
+    auto ram_it = std::next(m_vram.begin(), xy_to_addr(source.m_x, source.m_y, source.m_width));
 
     for(std::size_t offset{0}; offset != pixels.size(); offset += static_cast<std::size_t>(source.m_width))
     {
@@ -193,14 +199,14 @@ void vga::set_palette(const std::span<const color> colors)
 ////////////////////////////////////////////////////////////////////////////////
 void vga::set_pixel(const int x, const int y, const pixel_t color_index)
 {
-    m_vram.at(addr(x, y, m_width)) = color_index;
+    m_vram.at(xy_to_addr(x, y, m_width)) = color_index;
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 void vga::set_pixel(const SDL_Point& position, const pixel_t color_index)
 {
-    m_vram.at(addr(position.x, position.y, m_width)) = color_index;
+    m_vram.at(xy_to_addr(position.x, position.y, m_width)) = color_index;
 }
 
 
