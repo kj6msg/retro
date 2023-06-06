@@ -54,17 +54,26 @@ struct vga_mode
         graphics
     };
 
+    enum class font
+    {
+        ega_8x14,
+        vga_8x8,
+        vga_8x16,
+        vga_9x16
+    };
+
     int width{};
     int height{};
     int num_colors{};
     type type;
+    font font;
 };
 
-constexpr vga_mode vga_03h{720, 400, 16, vga_mode::type::text};
-constexpr vga_mode ega_0dh{320, 200, 16, vga_mode::type::graphics};
-constexpr vga_mode ega_0eh{640, 200, 16, vga_mode::type::graphics};
-constexpr vga_mode vga_12h{640, 480, 16, vga_mode::type::graphics};
-constexpr vga_mode vga_13h{320, 200, 256, vga_mode::type::graphics};
+constexpr vga_mode vga_03h{720, 400, 16, vga_mode::type::text, vga_mode::font::vga_9x16};
+constexpr vga_mode ega_0dh{320, 200, 16, vga_mode::type::graphics, vga_mode::font::vga_8x8};
+constexpr vga_mode ega_0eh{640, 200, 16, vga_mode::type::graphics, vga_mode::font::vga_8x8};
+constexpr vga_mode vga_12h{640, 480, 16, vga_mode::type::graphics, vga_mode::font::vga_8x16};
+constexpr vga_mode vga_13h{320, 200, 256, vga_mode::type::graphics, vga_mode::font::vga_9x16};
 
 const std::map<retro::vga::mode, vga_mode> vga_modes
 {
@@ -98,14 +107,6 @@ namespace retro
 ////////////////////////////////////////////////////////////////////////////////
 vga::vga(const mode video_mode)
 {
-    const auto mode = vga_modes.at(video_mode);
-    m_width = mode.width;
-    m_height = mode.height;
-    m_num_colors = mode.num_colors;
-
-    m_vram.resize(m_width * m_height);
-    m_palette.resize(m_num_colors);
-
     SDL_CreateWindowAndRenderer(0, 0, SDL_WINDOW_FULLSCREEN_DESKTOP, &m_window, &m_renderer);
 
     if(m_window == nullptr || m_renderer == nullptr)
@@ -113,20 +114,7 @@ vga::vga(const mode video_mode)
         throw std::runtime_error(SDL_GetError());
     }
 
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-    SDL_RenderSetLogicalSize(m_renderer, m_width, m_height);
-
-    SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
-    SDL_RenderClear(m_renderer);
-    SDL_RenderPresent(m_renderer);
-
-    m_texture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_ARGB8888,
-                                  SDL_TEXTUREACCESS_STREAMING, m_width, m_height);
-
-    if(m_texture == nullptr)
-    {
-        throw std::runtime_error(SDL_GetError());
-    }
+    set_mode(video_mode);
 
     reset_palette();
 }
@@ -186,6 +174,40 @@ void vga::reset_palette()
 void vga::set_color(const int index, const color& c)
 {
     m_palette.at(static_cast<std::size_t>(index)) = c;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+void vga::set_mode(const vga::mode video_mode)
+{
+    const auto mode = vga_modes.at(video_mode);
+    m_width = mode.width;
+    m_height = mode.height;
+    m_num_colors = mode.num_colors;
+
+    m_vram.resize(m_width * m_height);
+    m_palette.resize(m_num_colors);
+
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+    SDL_RenderSetLogicalSize(m_renderer, m_width, m_height);
+
+    SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
+    SDL_RenderClear(m_renderer);
+    SDL_RenderPresent(m_renderer);
+
+    if(m_texture != nullptr)
+    {
+        SDL_DestroyTexture(m_texture);
+        m_texture = nullptr;
+    }
+
+    m_texture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_ARGB8888,
+                                  SDL_TEXTUREACCESS_STREAMING, m_width, m_height);
+
+    if(m_texture == nullptr)
+    {
+        throw std::runtime_error(SDL_GetError());
+    }
 }
 
 
