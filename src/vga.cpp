@@ -92,7 +92,7 @@ const std::map<retro::vga::mode, vga_mode> vga_modes
 /// \param width width of a line in pixels
 /// \return linear address of coordinate
 ////////////////////////////////////////////////////////////////////////////////
-[[nodiscard]] constexpr std::size_t xy_to_addr(int x, int y, int width) noexcept
+[[nodiscard]] constexpr std::size_t xy_to_addr(int x, int y, int screen_width) noexcept
 {
     return static_cast<std::size_t>(x + width * y);
 }
@@ -144,7 +144,7 @@ void vga::blit(const std::span<const pixel_t> source)
 void vga::blit(const sprite& source)
 {
     const std::span<const pixel_t> pixels{source.m_texture};
-    auto ram_it = std::next(m_vram.begin(), xy_to_addr(source.m_x, source.m_y, source.m_width));
+    auto ram_it = std::next(m_vram.begin(), xy_to_addr(source.m_x, source.m_y, m_width));
 
     for(std::size_t offset{0}; offset != pixels.size(); offset += static_cast<std::size_t>(source.m_width))
     {
