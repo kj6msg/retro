@@ -5,6 +5,7 @@
 
 #include "retro/color.hpp"
 #include "retro/sprite.hpp"
+#include "retro/types.hpp"
 #include "retro/vga.hpp"
 
 #include <SDL2/SDL.h>
@@ -48,7 +49,7 @@ const std::array<retro::color, 16> ega_palette
 ////////////////////////////////////////////////////////////////////////////////
 struct vga_mode
 {
-    enum class type
+    enum class type_t
     {
         text,
         graphics
@@ -94,7 +95,7 @@ const std::map<retro::vga::mode, vga_mode> vga_modes
 ////////////////////////////////////////////////////////////////////////////////
 [[nodiscard]] constexpr std::size_t xy_to_addr(int x, int y, int screen_width) noexcept
 {
-    return static_cast<std::size_t>(x + width * y);
+    return static_cast<std::size_t>(x + screen_width * y);
 }
 
 }   // unnamed
@@ -235,14 +236,14 @@ void vga::set_pixel(const SDL_Point& position, const pixel_t color_index)
 ////////////////////////////////////////////////////////////////////////////////
 void vga::show()
 {
-    std::vector<color::argb_t> pixels(m_width * m_height);
+    std::vector<argb_t> pixels(m_width * m_height);
 
     std::transform(m_vram.cbegin(), m_vram.cend(), pixels.begin(),[&](auto i)
     {
         return m_palette.at(static_cast<std::size_t>(i)).to_argb();
     });
 
-    const int pitch = m_width * sizeof(color::argb_t);
+    const int pitch = m_width * sizeof(argb_t);
     SDL_UpdateTexture(m_texture, nullptr, pixels.data(), pitch);
 
     SDL_RenderClear(m_renderer);

@@ -6,6 +6,8 @@
 #ifndef RETRO_VGA_HPP
 #define RETRO_VGA_HPP
 
+#include <retro/types.hpp>
+
 #include <cstdint>
 #include <span>
 #include <vector>
@@ -31,10 +33,6 @@ class sprite;
 class vga
 {
   public:
-    using palette_t = std::vector<color>;
-    using pixel_t   = std::uint8_t;
-    using vram_t    = std::vector<pixel_t>;
-
     enum class mode
     {
         vga_03h,

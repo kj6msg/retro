@@ -6,6 +6,8 @@
 #ifndef RETRO_COLOR_HPP
 #define RETRO_COLOR_HPP
 
+#include <retro/types.hpp>
+
 #include <cstdint>
 
 
@@ -17,9 +19,6 @@ namespace retro
 class color
 {
   public:
-    using argb_t = std::uint32_t;
-    using channel_t = std::uint8_t;
-
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Default constructor.
     ////////////////////////////////////////////////////////////////////////////
@@ -31,7 +30,7 @@ class color
     /// \param g green value (0-255)
     /// \param b blue value (0-255)
     ////////////////////////////////////////////////////////////////////////////
-    color(channel_t r, channel_t g, channel_t b) noexcept;
+    color(color_channel_t r, color_channel_t g, color_channel_t b) noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Create color from ARGB value.
@@ -81,7 +80,7 @@ class color
     /// \param b right operand
     /// \return result of a + b
     ////////////////////////////////////////////////////////////////////////////
-    color operator+(channel_t b) const noexcept;
+    color operator+(color_channel_t b) const noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Overload of the binary - operator.
@@ -95,7 +94,7 @@ class color
     /// \param b right operand
     /// \return result of a - b
     ////////////////////////////////////////////////////////////////////////////
-    color operator-(channel_t b) const noexcept;
+    color operator-(color_channel_t b) const noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Overload of the binary * operator.
@@ -109,7 +108,7 @@ class color
     /// \param b right operand
     /// \return result of a * b
     ////////////////////////////////////////////////////////////////////////////
-    color operator*(channel_t b) const noexcept;
+    color operator*(color_channel_t b) const noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Overload of the += assignment operator.
@@ -123,7 +122,7 @@ class color
     /// \param b right operand
     /// \return result of a += b
     ////////////////////////////////////////////////////////////////////////////
-    color& operator+=(channel_t b) noexcept;
+    color& operator+=(color_channel_t b) noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Overload of the -= assignment operator.
@@ -137,7 +136,7 @@ class color
     /// \param b right operand
     /// \return result of a -= b
     ////////////////////////////////////////////////////////////////////////////
-    color& operator-=(channel_t b) noexcept;
+    color& operator-=(color_channel_t b) noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Overload of prefix increment operator.
@@ -164,9 +163,9 @@ class color
     color operator--(int) noexcept;
 
   private:
-    channel_t m_r{};
-    channel_t m_g{};
-    channel_t m_b{};
+    color_channel_t m_r{};
+    color_channel_t m_g{};
+    color_channel_t m_b{};
 };
 
 
@@ -177,14 +176,14 @@ class color
 /// \param b blue value (0-255)
 /// \return 32-bit ARGB value
 ////////////////////////////////////////////////////////////////////////////////
-[[nodiscard]] constexpr color::argb_t make_argb(const color::channel_t r, const color::channel_t g, const color::channel_t b) noexcept
+[[nodiscard]] constexpr argb_t make_argb(const color_channel_t r, const color_channel_t g, const color_channel_t b) noexcept
 {
-    constexpr color::channel_t a{255u};
+    constexpr color_channel_t a{255u};
 
-    auto argb = static_cast<color::argb_t>(b);
-    argb |= static_cast<color::argb_t>(g) << 8u;
-    argb |= static_cast<color::argb_t>(r) << 16u;
-    argb |= static_cast<color::argb_t>(a) << 24u;
+    auto argb = static_cast<argb_t>(b);
+    argb |= static_cast<argb_t>(g) << 8u;
+    argb |= static_cast<argb_t>(r) << 16u;
+    argb |= static_cast<argb_t>(a) << 24u;
 
     return argb;
 }

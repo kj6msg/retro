@@ -28,6 +28,7 @@ target_sources(retro PUBLIC
     ${PROJECT_SOURCE_DIR}/include/retro/retro.hpp
     ${PROJECT_SOURCE_DIR}/include/retro/sdl2.hpp
     ${PROJECT_SOURCE_DIR}/include/retro/sprite.hpp
+    ${PROJECT_SOURCE_DIR}/include/retro/types.hpp
     ${PROJECT_SOURCE_DIR}/include/retro/vga.hpp
 )
 

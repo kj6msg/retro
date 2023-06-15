@@ -23,7 +23,7 @@ class fire
     fire() : m_sdl2(retro::sdl2::subsystem::video), m_vga(retro::vga::mode::vga_13h)
     {
         // generate palette
-        retro::vga::palette_t palette(256);
+        retro::palette_t palette(256);
         const std::span<retro::color> colors{palette};
 
         // 33 colors: black (0, 0, 0) to red (128, 0, 0)
@@ -55,9 +55,9 @@ class fire
         for(int n{96}; auto& color : colors.subspan(96, 160))
         {
             const auto t = (static_cast<float>(n) - 96.0f) / (255.0f - 96.0f);
-            const auto r = static_cast<retro::color::channel_t>(std::lerp(192.0f, 255.0f, t));
-            const auto g = static_cast<retro::color::channel_t>(std::lerp(192.0f, 255.0f, t));
-            const auto b = static_cast<retro::color::channel_t>(std::lerp(0.0f, 255.0f, t));
+            const auto r = static_cast<retro::color_channel_t>(std::lerp(192.0f, 255.0f, t));
+            const auto g = static_cast<retro::color_channel_t>(std::lerp(192.0f, 255.0f, t));
+            const auto b = static_cast<retro::color_channel_t>(std::lerp(0.0f, 255.0f, t));
 
             color = retro::color(r, g, b);
             ++n;
@@ -72,11 +72,11 @@ class fire
     void run()
     {
         std::default_random_engine engine(std::random_device{}());
-        std::uniform_int_distribution<retro::vga::pixel_t> dist(0, 255);
+        std::uniform_int_distribution<retro::pixel_t> dist(0, 255);
 
         constexpr int width{320};
         constexpr int height{200};
-        retro::vga::vram_t img(width * height);
+        retro::vram_t img(width * height);
 
         while(m_running)
         {
@@ -113,7 +113,7 @@ class fire
                     pixel /= 4.03f;
 
                     const auto i = static_cast<std::size_t>(x + width * y);
-                    img[i] = static_cast<retro::vga::pixel_t>(pixel);
+                    img[i] = static_cast<retro::pixel_t>(pixel);
                 }
             }
 

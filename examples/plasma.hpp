@@ -25,7 +25,7 @@ class plasma
         {
             constexpr auto a{256.0};
             constexpr auto b = M_PI / 255.0;
-            const auto rgb = static_cast<retro::color::channel_t>(a * std::sin(b * n));
+            const auto rgb = static_cast<retro::color_channel_t>(a * std::sin(b * n));
             color = retro::color(rgb, rgb, rgb);
             n += 1.0;
         }
@@ -34,7 +34,7 @@ class plasma
         // generate plasma
         constexpr int width{320};
         constexpr int height{200};
-        retro::vga::vram_t img(width * height);
+        retro::vram_t img(width * height);
 
         for(int y{0}; y != height; ++y)
         {
@@ -45,7 +45,7 @@ class plasma
                                     63.5f + 128.0f;
 
                 const auto i = static_cast<std::size_t>(x + width * y);
-                img[i] = static_cast<retro::vga::pixel_t>(pixel);
+                img[i] = static_cast<retro::pixel_t>(pixel);
             }
         }
 
@@ -78,7 +78,7 @@ class plasma
 
     retro::sdl2 m_sdl2;
     retro::vga m_vga;
-    retro::vga::palette_t m_palette;
+    retro::palette_t m_palette;
 };
 
 #endif  // PLASMA_HPP

@@ -19,7 +19,7 @@ class xor_demo
     xor_demo() : m_sdl2(retro::sdl2::subsystem::video), m_vga(retro::vga::mode::vga_13h)
     {
         // generate palette
-        retro::vga::palette_t palette(256);
+        retro::palette_t palette(256);
         std::iota(palette.begin(), palette.end(), retro::color{});
         m_vga.set_palette(palette);
 
@@ -28,7 +28,7 @@ class xor_demo
         {
             for(int x{0}; x != 320; ++x)
             {
-                const auto pixel = static_cast<retro::vga::pixel_t>((x ^ y) & 255);
+                const auto pixel = static_cast<retro::pixel_t>((x ^ y) & 255);
                 m_vga.set_pixel(x, y, pixel);
             }
         }

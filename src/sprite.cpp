@@ -19,7 +19,7 @@ namespace retro
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-sprite::sprite(const int width, const int height, const std::optional<std::span<const vga::pixel_t>>& pixels)
+sprite::sprite(const int width, const int height, const std::optional<std::span<const pixel_t>>& pixels)
     : m_width(width), m_height(height)
 {
     if(pixels.has_value())

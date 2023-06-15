@@ -6,7 +6,7 @@
 #ifndef RETRO_SPRITE_HPP
 #define RETRO_SPRITE_HPP
 
-#include <retro/vga.hpp>
+#include <retro/types.hpp>
 
 #include <optional>
 #include <span>
@@ -33,7 +33,7 @@ class sprite
     /// \param height height in pixels
     /// \param pixels pixel data [optional]
     ////////////////////////////////////////////////////////////////////////////
-    sprite(int width, int height, const std::optional<std::span<const vga::pixel_t>>& pixels = std::nullopt);
+    sprite(int width, int height, const std::optional<std::span<const pixel_t>>& pixels = std::nullopt);
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Copy constructor.
@@ -99,7 +99,7 @@ class sprite
     int m_x{};
     int m_y{};
 
-    vga::vram_t m_texture;
+    vram_t m_texture;
 };
 
 }   // retro
