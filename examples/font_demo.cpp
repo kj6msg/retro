@@ -3,15 +3,12 @@
 // Copyright (c) 2023 Ryan Clarke
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RETRO_HPP
-#define RETRO_HPP
-
-#include <retro/color.hpp>
-#include <retro/font.hpp>
-#include <retro/sdl2.hpp>
-#include <retro/sprite.hpp>
-#include <retro/types.hpp>
-#include <retro/vga.hpp>
+#include "font_demo.hpp"
 
 
-#endif  // RETRO_HPP
+////////////////////////////////////////////////////////////////////////////////
+int main()
+{
+    font_demo app;
+    app.run();
+}

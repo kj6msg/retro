@@ -3,7 +3,10 @@
 // Copyright (c) 2023 Ryan Clarke
 ////////////////////////////////////////////////////////////////////////////////
 
+#include "glyphs.hpp"
+
 #include "retro/color.hpp"
+#include "retro/font.hpp"
 #include "retro/sprite.hpp"
 #include "retro/types.hpp"
 #include "retro/vga.hpp"
@@ -55,30 +58,26 @@ struct vga_mode
         graphics
     };
 
-    enum class font
-    {
-        ega_8x14,
-        vga_8x8,
-        vga_8x16,
-        vga_9x16
-    };
-
     int width{};
     int height{};
     int num_colors{};
-    type type;
-    font font;
+    type_t type;
+    const retro::font& font;
 };
 
-constexpr vga_mode vga_03h{720, 400, 16, vga_mode::type::text, vga_mode::font::vga_9x16};
-constexpr vga_mode ega_0dh{320, 200, 16, vga_mode::type::graphics, vga_mode::font::vga_8x8};
-constexpr vga_mode ega_0eh{640, 200, 16, vga_mode::type::graphics, vga_mode::font::vga_8x8};
-constexpr vga_mode vga_12h{640, 480, 16, vga_mode::type::graphics, vga_mode::font::vga_8x16};
-constexpr vga_mode vga_13h{320, 200, 256, vga_mode::type::graphics, vga_mode::font::vga_9x16};
+const retro::font vga_8x8{glyphs_8x8, 8, 8};
+const retro::font ega_8x14{glyphs_8x8, 8, 14};
+const retro::font vga_8x16{glyphs_8x8, 8, 16};
 
-const std::map<retro::vga::mode, vga_mode> vga_modes
+// constexpr vga_mode vga_03h{720, 400, 16, vga_mode::type_t::text, vga_mode::font_t::vga_9x16};
+constexpr vga_mode ega_0dh{320, 200, 16, vga_mode::type_t::graphics, vga_8x8};
+constexpr vga_mode ega_0eh{640, 200, 16, vga_mode::type_t::graphics, vga_8x8};
+constexpr vga_mode vga_12h{640, 480, 16, vga_mode::type_t::graphics, vga_8x16};
+constexpr vga_mode vga_13h{320, 200, 256, vga_mode::type_t::graphics, vga_8x8};
+
+const std::map<retro::vga::mode, const vga_mode&> vga_modes
 {
-    {retro::vga::mode::vga_03h, vga_03h},
+    // {retro::vga::mode::vga_03h, vga_03h},
     {retro::vga::mode::ega_0dh, ega_0dh},
     {retro::vga::mode::ega_0eh, ega_0eh},
     {retro::vga::mode::vga_12h, vga_12h},
@@ -164,6 +163,15 @@ color vga::get_color(const int index) const
 
 
 ////////////////////////////////////////////////////////////////////////////////
+void vga::putchar(const unsigned char c, const pixel_t fg, const pixel_t bg, const int x, const int y)
+{
+    sprite s(8, 8, m_font.glyph(c, fg, bg));
+    s.position(x, y);
+    blit(s);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 void vga::reset_palette()
 {
     auto it = std::copy(ega_palette.cbegin(), ega_palette.cend(), m_palette.begin());
@@ -188,6 +196,7 @@ void vga::set_mode(const vga::mode video_mode)
 
     m_vram.resize(m_width * m_height);
     m_palette.resize(m_num_colors);
+    m_font = mode.font;
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
     SDL_RenderSetLogicalSize(m_renderer, m_width, m_height);

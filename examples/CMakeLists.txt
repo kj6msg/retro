@@ -20,3 +20,9 @@ add_executable(fire fire.cpp fire.hpp)
 target_compile_features(fire PRIVATE cxx_std_20)
 target_compile_options(fire PRIVATE -Wall -Wextra)
 target_link_libraries(fire PRIVATE retro)
+
+add_executable(font_demo font_demo.cpp font_demo.hpp)
+
+target_compile_features(font_demo PRIVATE cxx_std_20)
+target_compile_options(font_demo PRIVATE -Wall -Wextra)
+target_link_libraries(font_demo PRIVATE retro)

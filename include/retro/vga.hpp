@@ -6,6 +6,7 @@
 #ifndef RETRO_VGA_HPP
 #define RETRO_VGA_HPP
 
+#include <retro/font.hpp>
 #include <retro/types.hpp>
 
 #include <cstdint>
@@ -73,6 +74,16 @@ class vga
     [[nodiscard]] color get_color(int index) const;
 
     ////////////////////////////////////////////////////////////////////////////
+    /// \brief Write character.
+    /// \param c character
+    /// \param fg foreground color
+    /// \param bg background color
+    /// \param x x-coordinate
+    /// \param y y-coordinate
+    ////////////////////////////////////////////////////////////////////////////
+    void putchar(unsigned char c, pixel_t fg, pixel_t bg, int x, int y);
+
+    ////////////////////////////////////////////////////////////////////////////
     /// \brief Reset to the default palette.
     ////////////////////////////////////////////////////////////////////////////
     void reset_palette();
@@ -133,6 +144,7 @@ class vga
 
     vram_t m_vram;
     palette_t m_palette;
+    font m_font;
 };
 
 }   // retro
