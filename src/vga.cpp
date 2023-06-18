@@ -52,16 +52,9 @@ const std::array<retro::color, 16> ega_palette
 ////////////////////////////////////////////////////////////////////////////////
 struct vga_mode
 {
-    enum class type_t
-    {
-        text,
-        graphics
-    };
-
     int width{};
     int height{};
     int num_colors{};
-    type_t type;
     const retro::font& font;
 };
 
@@ -70,10 +63,10 @@ const retro::font ega_8x14{glyphs_8x8, 8, 14};
 const retro::font vga_8x16{glyphs_8x8, 8, 16};
 
 // constexpr vga_mode vga_03h{720, 400, 16, vga_mode::type_t::text, vga_mode::font_t::vga_9x16};
-constexpr vga_mode ega_0dh{320, 200, 16, vga_mode::type_t::graphics, vga_8x8};
-constexpr vga_mode ega_0eh{640, 200, 16, vga_mode::type_t::graphics, vga_8x8};
-constexpr vga_mode vga_12h{640, 480, 16, vga_mode::type_t::graphics, vga_8x16};
-constexpr vga_mode vga_13h{320, 200, 256, vga_mode::type_t::graphics, vga_8x8};
+constexpr vga_mode ega_0dh{320, 200, 16, vga_8x8};
+constexpr vga_mode ega_0eh{640, 200, 16, vga_8x8};
+constexpr vga_mode vga_12h{640, 480, 16, vga_8x16};
+constexpr vga_mode vga_13h{320, 200, 256, vga_8x8};
 
 const std::map<retro::vga::mode, const vga_mode&> vga_modes
 {
