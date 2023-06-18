@@ -77,19 +77,6 @@ const std::map<retro::vga::mode, const vga_mode&> vga_modes
     {retro::vga::mode::vga_13h, vga_13h}
 };
 
-
-////////////////////////////////////////////////////////////////////////////////
-/// \brief Convert (x,y) coordinate to linear address.
-/// \param x x location
-/// \param y y location
-/// \param width width of a line in pixels
-/// \return linear address of coordinate
-////////////////////////////////////////////////////////////////////////////////
-[[nodiscard]] constexpr std::size_t xy_to_addr(int x, int y, int screen_width) noexcept
-{
-    return static_cast<std::size_t>(x + screen_width * y);
-}
-
 }   // unnamed
 
 
@@ -137,7 +124,7 @@ void vga::blit(const std::span<const pixel_t> source)
 void vga::blit(const sprite& source)
 {
     const std::span<const pixel_t> pixels{source.m_texture};
-    auto ram_it = std::next(m_vram.begin(), xy_to_addr(source.m_x, source.m_y, m_width));
+    auto ram_it = std::next(m_vram.begin(), xy_to_addr(source.m_x, source.m_y));
 
     for(std::size_t offset{0}; offset != pixels.size(); offset += static_cast<std::size_t>(source.m_width))
     {
@@ -224,14 +211,14 @@ void vga::set_palette(const std::span<const color> colors)
 ////////////////////////////////////////////////////////////////////////////////
 void vga::set_pixel(const int x, const int y, const pixel_t color_index)
 {
-    m_vram.at(xy_to_addr(x, y, m_width)) = color_index;
+    m_vram.at(xy_to_addr(x, y)) = color_index;
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 void vga::set_pixel(const SDL_Point& position, const pixel_t color_index)
 {
-    m_vram.at(xy_to_addr(position.x, position.y, m_width)) = color_index;
+    m_vram.at(xy_to_addr(position.x, position.y)) = color_index;
 }
 
 
@@ -251,6 +238,13 @@ void vga::show()
     SDL_RenderClear(m_renderer);
     SDL_RenderCopy(m_renderer, m_texture, nullptr, nullptr);
     SDL_RenderPresent(m_renderer);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+constexpr std::size_t vga::xy_to_addr(const int x, const int y) noexcept
+{
+    return static_cast<std::size_t>(x + m_width * y);
 }
 
 }   // retro

@@ -9,6 +9,7 @@
 #include <retro/font.hpp>
 #include <retro/types.hpp>
 
+#include <cstddef>
 #include <cstdint>
 #include <span>
 #include <vector>
@@ -134,6 +135,14 @@ class vga
     vga& operator=(vga&&) = delete;
 
   private:
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief Convert (x,y) coordinate to linear address.
+    /// \param x x location
+    /// \param y y location
+    /// \return linear address of coordinate
+    ////////////////////////////////////////////////////////////////////////////
+    [[nodiscard]] constexpr std::size_t xy_to_addr(int x, int y) noexcept;
+
     int m_width{};
     int m_height{};
     int m_num_colors{};
