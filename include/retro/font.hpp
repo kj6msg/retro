@@ -11,6 +11,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <span>
+#include <utility>
 #include <vector>
 
 
@@ -67,6 +68,12 @@ class font
     /// \return pixelized glyph
     ////////////////////////////////////////////////////////////////////////////
     [[nodiscard]] vram_t glyph(unsigned char c, pixel_t fg, pixel_t bg) const;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief Get size of font.
+    /// \return size of font (width, height)
+    ////////////////////////////////////////////////////////////////////////////
+    [[nodiscard]] std::pair<int, int> size() const noexcept;
 
   private:
     int m_width{};

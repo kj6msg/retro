@@ -10,6 +10,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <span>
+#include <utility>
 #include <vector>
 
 
@@ -32,20 +33,31 @@ vram_t font::glyph(const unsigned char c, const pixel_t fg, const pixel_t bg) co
     const auto offset = static_cast<std::size_t>(c * m_height);
     const auto raw_glyph = std::span(m_glyphs).subspan(offset, m_height);
 
-    vram_t new_glyph(m_width * m_height);
+    vram_t new_glyph{};
 
-    // Each line of a glyph is represented by 8-bits. Generate a pixel_t for
-    // each bit.
-    for(auto it = new_glyph.begin(); auto line : raw_glyph)
+    for(auto line : raw_glyph)
     {
-        it = std::for_each_n(it, 8, [=, &line](auto& g)
+        for(int i{0}; i != 8; ++i)
         {
-            g = ((line & std::byte{0b1000'0000}) == std::byte{0}) ? bg : fg;
+            const auto p = ((std::to_integer<int>(line) & 0x80) == 0) ? bg : fg;
+            new_glyph.emplace_back(p);
             line <<= 1;
-        });
+        }
+
+        if(m_width == 9)
+        {
+            new_glyph.emplace_back(bg);
+        }
     }
 
     return new_glyph;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+std::pair<int, int> font::size() const noexcept
+{
+    return std::make_pair(m_width, m_height);
 }
 
 }   // retro

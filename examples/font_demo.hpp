@@ -20,12 +20,15 @@ class font_demo
         {
             m_vga.putchar(static_cast<unsigned char>(c), 7, 0, x, y);
 
-            x += 8;
+            constexpr int font_width{8};
+            constexpr int font_height{8};
 
-            if(x == 128)
+            x += font_width;
+
+            if(x == font_width * 16)
             {
                 x = 0;
-                y += 8;
+                y += font_height;
             }
         }
 

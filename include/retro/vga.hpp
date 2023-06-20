@@ -40,6 +40,7 @@ class vga
         vga_03h,
         ega_0dh,
         ega_0eh,
+        ega_10h,
         vga_12h,
         vga_13h
     };

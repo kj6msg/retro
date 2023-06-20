@@ -59,20 +59,23 @@ struct vga_mode
 };
 
 const retro::font vga_8x8{glyphs_8x8, 8, 8};
-const retro::font ega_8x14{glyphs_8x8, 8, 14};
-const retro::font vga_8x16{glyphs_8x8, 8, 16};
+const retro::font ega_8x14{glyphs_8x14, 8, 14};
+const retro::font vga_8x16{glyphs_8x16, 8, 16};
+const retro::font vga_9x16{glyphs_8x16, 9, 16};
 
-// constexpr vga_mode vga_03h{720, 400, 16, vga_mode::type_t::text, vga_mode::font_t::vga_9x16};
+constexpr vga_mode vga_03h{720, 400, 16, vga_9x16};
 constexpr vga_mode ega_0dh{320, 200, 16, vga_8x8};
 constexpr vga_mode ega_0eh{640, 200, 16, vga_8x8};
+constexpr vga_mode ega_10h{640, 350, 16, ega_8x14};
 constexpr vga_mode vga_12h{640, 480, 16, vga_8x16};
 constexpr vga_mode vga_13h{320, 200, 256, vga_8x8};
 
 const std::map<retro::vga::mode, const vga_mode&> vga_modes
 {
-    // {retro::vga::mode::vga_03h, vga_03h},
+    {retro::vga::mode::vga_03h, vga_03h},
     {retro::vga::mode::ega_0dh, ega_0dh},
     {retro::vga::mode::ega_0eh, ega_0eh},
+    {retro::vga::mode::ega_10h, ega_10h},
     {retro::vga::mode::vga_12h, vga_12h},
     {retro::vga::mode::vga_13h, vga_13h}
 };
@@ -145,7 +148,8 @@ color vga::get_color(const int index) const
 ////////////////////////////////////////////////////////////////////////////////
 void vga::putchar(const unsigned char c, const pixel_t fg, const pixel_t bg, const int x, const int y)
 {
-    sprite s(8, 8, m_font.glyph(c, fg, bg));
+    const auto [font_width, font_height] = m_font.size();
+    sprite s(font_width, font_height, m_font.glyph(c, fg, bg));
     s.position(x, y);
     blit(s);
 }
