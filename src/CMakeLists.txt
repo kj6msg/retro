@@ -15,10 +15,13 @@ set_target_properties(retro PROPERTIES
 
 target_sources(retro PRIVATE
     color.cpp
+    ega_palette.hpp
     font.cpp
+    glyphs.hpp
     sdl2.cpp
     sprite.cpp
     vga.cpp
+    vga_modes.hpp
 )
 
 target_sources(retro PUBLIC

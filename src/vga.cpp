@@ -3,10 +3,10 @@
 // Copyright (c) 2023 Ryan Clarke
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "glyphs.hpp"
+#include "ega_palette.hpp"
+#include "vga_modes.hpp"
 
 #include "retro/color.hpp"
-#include "retro/font.hpp"
 #include "retro/sprite.hpp"
 #include "retro/types.hpp"
 #include "retro/vga.hpp"
@@ -21,66 +21,6 @@
 #include <span>
 #include <stdexcept>
 #include <vector>
-
-
-////////////////////////////////////////////////////////////////////////////////
-namespace
-{
-
-////////////////////////////////////////////////////////////////////////////////
-const std::array<retro::color, 16> ega_palette
-{
-    retro::color(0, 0, 0),        // black
-    retro::color(0, 0, 170),      // blue
-    retro::color(0, 170, 0),      // green
-    retro::color(0, 170, 170),    // cyan
-    retro::color(170, 0, 0),      // red
-    retro::color(170, 0, 170),    // magenta
-    retro::color(170, 85, 0),     // brown
-    retro::color(170, 170, 170),  // white
-    retro::color(85, 85, 85),     // dark gray
-    retro::color(85, 85, 255),    // bright blue
-    retro::color(85, 255, 85),    // bright green
-    retro::color(85, 255, 255),   // bright cyan
-    retro::color(255, 85, 85),    // bright red
-    retro::color(255, 85, 255),   // bright magenta
-    retro::color(255, 255, 85),   // bright yellow
-    retro::color(255, 255, 255)   // bright white
-};
-
-
-////////////////////////////////////////////////////////////////////////////////
-struct vga_mode
-{
-    int width{};
-    int height{};
-    int num_colors{};
-    const retro::font& font;
-};
-
-const retro::font vga_8x8{glyphs_8x8, 8, 8};
-const retro::font ega_8x14{glyphs_8x14, 8, 14};
-const retro::font vga_8x16{glyphs_8x16, 8, 16};
-const retro::font vga_9x16{glyphs_8x16, 9, 16};
-
-constexpr vga_mode vga_03h{720, 400, 16, vga_9x16};
-constexpr vga_mode ega_0dh{320, 200, 16, vga_8x8};
-constexpr vga_mode ega_0eh{640, 200, 16, vga_8x8};
-constexpr vga_mode ega_10h{640, 350, 16, ega_8x14};
-constexpr vga_mode vga_12h{640, 480, 16, vga_8x16};
-constexpr vga_mode vga_13h{320, 200, 256, vga_8x8};
-
-const std::map<retro::vga::mode, const vga_mode&> vga_modes
-{
-    {retro::vga::mode::vga_03h, vga_03h},
-    {retro::vga::mode::ega_0dh, ega_0dh},
-    {retro::vga::mode::ega_0eh, ega_0eh},
-    {retro::vga::mode::ega_10h, ega_10h},
-    {retro::vga::mode::vga_12h, vga_12h},
-    {retro::vga::mode::vga_13h, vga_13h}
-};
-
-}   // unnamed
 
 
 ////////////////////////////////////////////////////////////////////////////////
