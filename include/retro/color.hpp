@@ -22,7 +22,7 @@ class color
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Default constructor.
     ////////////////////////////////////////////////////////////////////////////
-    color() noexcept = default;
+    constexpr color() noexcept = default;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Create color from RGB values.
@@ -30,13 +30,13 @@ class color
     /// \param g green value (0-255)
     /// \param b blue value (0-255)
     ////////////////////////////////////////////////////////////////////////////
-    color(color_channel_t r, color_channel_t g, color_channel_t b) noexcept;
+    constexpr color(color_channel_t r, color_channel_t g, color_channel_t b) noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Create color from ARGB value.
     /// \param argb 32-bit ARGB value
     ////////////////////////////////////////////////////////////////////////////
-    color(argb_t argb) noexcept;
+    constexpr color(argb_t argb) noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Copy constructor.
@@ -66,7 +66,7 @@ class color
     /// \brief Convert color to 32-bit ARGB value.
     /// \return 32-bit ARGB value
     ////////////////////////////////////////////////////////////////////////////
-    [[nodiscard]] argb_t to_argb() const noexcept;
+    [[nodiscard]] constexpr argb_t to_argb() const noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Overload of the binary + operator.
@@ -162,6 +162,24 @@ class color
     ////////////////////////////////////////////////////////////////////////////
     color operator--(int) noexcept;
 
+    ////////////////////////////////////////////////////////////////////////////
+    static const color black;
+    static const color blue;
+    static const color green;
+    static const color cyan;
+    static const color red;
+    static const color magenta;
+    static const color brown;
+    static const color white;
+    static const color dark_gray;
+    static const color bright_blue;
+    static const color bright_green;
+    static const color bright_cyan;
+    static const color bright_red;
+    static const color bright_magenta;
+    static const color bright_yellow;
+    static const color bright_white;
+
   private:
     color_channel_t m_r{};
     color_channel_t m_g{};
@@ -187,6 +205,48 @@ class color
 
     return argb;
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+constexpr color::color(const color_channel_t r, const color_channel_t g, const color_channel_t b) noexcept
+    : m_r(r), m_g(g), m_b(b)
+{
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+constexpr color::color(const argb_t argb) noexcept
+{
+    m_r = static_cast<color_channel_t>((argb & 0xff0000) >> 16);
+    m_g = static_cast<color_channel_t>((argb & 0xff00) >> 8);
+    m_b = static_cast<color_channel_t>(argb & 0xff);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+constexpr argb_t color::to_argb() const noexcept
+{
+    return make_argb(m_r, m_g, m_b);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+constexpr color color::black(0, 0, 0);
+constexpr color color::blue(0, 0, 170);
+constexpr color color::green(0, 170, 0);
+constexpr color color::cyan(0, 170, 170);
+constexpr color color::red(170, 0, 0);
+constexpr color color::magenta(170, 0, 170);
+constexpr color color::brown(170, 85, 0);
+constexpr color color::white(170, 170, 170);
+constexpr color color::dark_gray(85, 85, 85);
+constexpr color color::bright_blue(85, 85, 255);
+constexpr color color::bright_green(85, 255, 85);
+constexpr color color::bright_cyan(85, 255, 255);
+constexpr color color::bright_red(255, 85, 85);
+constexpr color color::bright_magenta(255, 85, 255);
+constexpr color color::bright_yellow(255, 255, 85);
+constexpr color color::bright_white(255, 255, 255);
 
 }   // retro
 
