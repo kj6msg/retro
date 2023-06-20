@@ -129,7 +129,7 @@ void vga::blit(const sprite& source)
     const std::span<const pixel_t> pixels{source.m_texture};
     auto ram_it = std::next(m_vram.begin(), xy_to_addr(source.m_x, source.m_y));
 
-    for(std::size_t offset{0}; offset != pixels.size(); offset += static_cast<std::size_t>(source.m_width))
+    for(std::size_t offset{}; offset != pixels.size(); offset += static_cast<std::size_t>(source.m_width))
     {
         const auto line = pixels.subspan(offset, static_cast<std::size_t>(source.m_width));
         std::copy(line.cbegin(), line.cend(), ram_it);

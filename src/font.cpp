@@ -33,11 +33,11 @@ vram_t font::glyph(const unsigned char c, const pixel_t fg, const pixel_t bg) co
     const auto offset = static_cast<std::size_t>(c * m_height);
     const auto raw_glyph = std::span(m_glyphs).subspan(offset, m_height);
 
-    vram_t new_glyph{};
+    vram_t new_glyph;
 
     for(auto line : raw_glyph)
     {
-        for(int i{0}; i != 8; ++i)
+        for(int i{}; i != 8; ++i)
         {
             const auto p = ((std::to_integer<int>(line) & 0x80) == 0) ? bg : fg;
             new_glyph.emplace_back(p);

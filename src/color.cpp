@@ -12,13 +12,8 @@ namespace retro
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-color::color() noexcept
-{
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-color::color(const color_channel_t r, const color_channel_t g, const color_channel_t b) noexcept : m_r(r), m_g(g), m_b(b)
+color::color(const color_channel_t r, const color_channel_t g, const color_channel_t b) noexcept
+    : m_r(r), m_g(g), m_b(b)
 {
 }
 
@@ -26,9 +21,9 @@ color::color(const color_channel_t r, const color_channel_t g, const color_chann
 ////////////////////////////////////////////////////////////////////////////////
 color::color(const argb_t argb) noexcept
 {
-    m_r = static_cast<color_channel_t>((argb & 0xff0000u) >> 16u);
-    m_g = static_cast<color_channel_t>((argb & 0xff00u) >> 8u);
-    m_b = static_cast<color_channel_t>(argb & 0xffu);
+    m_r = static_cast<color_channel_t>((argb & 0xff0000) >> 16);
+    m_g = static_cast<color_channel_t>((argb & 0xff00) >> 8);
+    m_b = static_cast<color_channel_t>(argb & 0xff);
 }
 
 

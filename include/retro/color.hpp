@@ -22,7 +22,7 @@ class color
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Default constructor.
     ////////////////////////////////////////////////////////////////////////////
-    color() noexcept;
+    color() noexcept = default;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Create color from RGB values.
@@ -178,12 +178,12 @@ class color
 ////////////////////////////////////////////////////////////////////////////////
 [[nodiscard]] constexpr argb_t make_argb(const color_channel_t r, const color_channel_t g, const color_channel_t b) noexcept
 {
-    constexpr color_channel_t a{255u};
+    constexpr color_channel_t a{255};
 
     auto argb = static_cast<argb_t>(b);
-    argb |= static_cast<argb_t>(g) << 8u;
-    argb |= static_cast<argb_t>(r) << 16u;
-    argb |= static_cast<argb_t>(a) << 24u;
+    argb |= static_cast<argb_t>(g) << 8;
+    argb |= static_cast<argb_t>(r) << 16;
+    argb |= static_cast<argb_t>(a) << 24;
 
     return argb;
 }
