@@ -16,7 +16,7 @@ namespace
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::array<retro::color, 16> ega_palette
+constexpr std::array<retro::color, 16> ega_palette
 {
     retro::color::black,
     retro::color::blue,
