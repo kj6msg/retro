@@ -209,7 +209,7 @@ class color
 
 ////////////////////////////////////////////////////////////////////////////////
 constexpr color::color(const color_channel_t r, const color_channel_t g, const color_channel_t b) noexcept
-    : m_r(r), m_g(g), m_b(b)
+    : m_r{r}, m_g{g}, m_b{b}
 {
 }
 
@@ -231,22 +231,22 @@ constexpr argb_t color::to_argb() const noexcept
 
 
 ////////////////////////////////////////////////////////////////////////////////
-constexpr color color::black(0, 0, 0);
-constexpr color color::blue(0, 0, 170);
-constexpr color color::green(0, 170, 0);
-constexpr color color::cyan(0, 170, 170);
-constexpr color color::red(170, 0, 0);
-constexpr color color::magenta(170, 0, 170);
-constexpr color color::brown(170, 85, 0);
-constexpr color color::white(170, 170, 170);
-constexpr color color::dark_gray(85, 85, 85);
-constexpr color color::bright_blue(85, 85, 255);
-constexpr color color::bright_green(85, 255, 85);
-constexpr color color::bright_cyan(85, 255, 255);
-constexpr color color::bright_red(255, 85, 85);
-constexpr color color::bright_magenta(255, 85, 255);
-constexpr color color::bright_yellow(255, 255, 85);
-constexpr color color::bright_white(255, 255, 255);
+constexpr color color::black{0, 0, 0};
+constexpr color color::blue{0, 0, 170};
+constexpr color color::green{0, 170, 0};
+constexpr color color::cyan{0, 170, 170};
+constexpr color color::red{170, 0, 0};
+constexpr color color::magenta{170, 0, 170};
+constexpr color color::brown{170, 85, 0};
+constexpr color color::white{170, 170, 170};
+constexpr color color::dark_gray{85, 85, 85};
+constexpr color color::bright_blue{85, 85, 255};
+constexpr color color::bright_green{85, 255, 85};
+constexpr color color::bright_cyan{85, 255, 255};
+constexpr color color::bright_red{255, 85, 85};
+constexpr color color::bright_magenta{255, 85, 255};
+constexpr color color::bright_yellow{255, 255, 85};
+constexpr color color::bright_white{255, 255, 255};
 
 }   // retro
 

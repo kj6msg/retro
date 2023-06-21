@@ -20,7 +20,7 @@ namespace retro
 
 ////////////////////////////////////////////////////////////////////////////////
 font::font(const std::span<const std::byte> glyphs, const int width, const int height)
-    : m_width(width), m_height(height)
+    : m_width{width}, m_height{height}
 {
     m_glyphs.resize(glyphs.size());
     std::copy(glyphs.cbegin(), glyphs.cend(), m_glyphs.begin());
