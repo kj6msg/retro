@@ -1,0 +1,13 @@
+################################################################################
+## Retro - Retro Computing Library
+## Copyright (c) 2023 Ryan Clarke
+################################################################################
+
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+find_dependency(SDL2 REQUIRED COMPONENTS SDL2)
+
+include(${CMAKE_CURRENT_LIST_DIR}/retroTargets.cmake)
+
+check_required_components(retro)

@@ -3,19 +3,12 @@
 // Copyright (c) 2023 Ryan Clarke
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RETRO_GLYPHS_HPP
-#define RETRO_GLYPHS_HPP
-
 #include <array>
 #include <cstddef>
 
 
 ////////////////////////////////////////////////////////////////////////////////
-namespace
-{
-
-////////////////////////////////////////////////////////////////////////////////
-constexpr std::array<std::byte, 8 * 256> glyphs_8x8
+extern constexpr std::array<std::byte, 8 * 256> glyphs_8x8
 {
     std::byte{0b00000000},
     std::byte{0b00000000},
@@ -2069,7 +2062,7 @@ constexpr std::array<std::byte, 8 * 256> glyphs_8x8
 
 
 ////////////////////////////////////////////////////////////////////////////////
-constexpr std::array<std::byte, 14 * 256> glyphs_8x14
+extern constexpr std::array<std::byte, 14 * 256> glyphs_8x14
 {
     std::byte{0b00000000},
     std::byte{0b00000000},
@@ -5659,7 +5652,7 @@ constexpr std::array<std::byte, 14 * 256> glyphs_8x14
 
 
 ////////////////////////////////////////////////////////////////////////////////
-constexpr std::array<std::byte, 16 * 256> glyphs_8x16
+extern constexpr std::array<std::byte, 16 * 256> glyphs_8x16
 {
     std::byte{0b00000000},
     std::byte{0b00000000},
@@ -9758,8 +9751,3 @@ constexpr std::array<std::byte, 16 * 256> glyphs_8x16
     std::byte{0b00000000},
     std::byte{0b00000000}
 };
-
-}   // unnamed
-
-
-#endif  // RETRO_GLYPHS_HPP

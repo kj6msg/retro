@@ -21,8 +21,71 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////
-#include "ega_palette.hpp"
-#include "vga_modes.hpp"
+namespace
+{
+
+////////////////////////////////////////////////////////////////////////////////
+constexpr std::array<retro::color, 16> ega_palette
+{
+    retro::color::black,
+    retro::color::blue,
+    retro::color::green,
+    retro::color::cyan,
+    retro::color::red,
+    retro::color::magenta,
+    retro::color::brown,
+    retro::color::white,
+    retro::color::dark_gray,
+    retro::color::bright_blue,
+    retro::color::bright_green,
+    retro::color::bright_cyan,
+    retro::color::bright_red,
+    retro::color::bright_magenta,
+    retro::color::bright_yellow,
+    retro::color::bright_white,
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
+extern "C" const std::array<std::byte, 8 * 256> glyphs_8x8;
+extern "C" const std::array<std::byte, 14 * 256> glyphs_8x14;
+extern "C" const std::array<std::byte, 16 * 256> glyphs_8x16;
+
+const retro::font vga_8x8{glyphs_8x8, 8, 8};
+const retro::font ega_8x14{glyphs_8x14, 8, 14};
+const retro::font vga_8x16{glyphs_8x16, 8, 16};
+const retro::font vga_9x16{glyphs_8x16, 9, 16};
+
+
+////////////////////////////////////////////////////////////////////////////////
+struct vga_mode
+{
+    int width{};
+    int height{};
+    int num_colors{};
+    const retro::font& font;
+};
+
+constexpr vga_mode vga_03h{720, 400, 16, vga_9x16};
+constexpr vga_mode ega_0dh{320, 200, 16, vga_8x8};
+constexpr vga_mode ega_0eh{640, 200, 16, vga_8x8};
+constexpr vga_mode ega_10h{640, 350, 16, ega_8x14};
+constexpr vga_mode vga_12h{640, 480, 16, vga_8x16};
+constexpr vga_mode vga_13h{320, 200, 256, vga_8x8};
+
+
+////////////////////////////////////////////////////////////////////////////////
+const std::map<retro::vga::mode, const vga_mode&> vga_modes
+{
+    {retro::vga::mode::vga_03h, vga_03h},
+    {retro::vga::mode::ega_0dh, ega_0dh},
+    {retro::vga::mode::ega_0eh, ega_0eh},
+    {retro::vga::mode::ega_10h, ega_10h},
+    {retro::vga::mode::vga_12h, vga_12h},
+    {retro::vga::mode::vga_13h, vga_13h}
+};
+
+}   // unnamed
 
 
 ////////////////////////////////////////////////////////////////////////////////
