@@ -9,6 +9,6 @@ The Retro Computing Library uses CMake.
 ## Author
 Ryan Clarke
 ## License
-The Retro Computing Library is licensed under the MIT license.
+The Retro Computing Library is licensed under the [MIT license](https://choosealicense.com/licenses/mit/).
 ## Dependencies
 * [Simple Directmedia Layer 2.0](https://www.libsdl.org) is under the [zlib license](https://choosealicense.com/licenses/zlib/).
