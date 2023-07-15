@@ -26,7 +26,7 @@ sprite::sprite(const int width, const int height, const std::optional<std::span<
     {
         const auto p = pixels.value();
         m_texture.resize(p.size());
-        std::copy(p.cbegin(), p.cend(), m_texture.begin());
+        std::copy(p.begin(), p.end(), m_texture.begin());
     }
     else
     {

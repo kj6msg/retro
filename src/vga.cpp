@@ -124,7 +124,7 @@ vga::~vga()
 ////////////////////////////////////////////////////////////////////////////////
 void vga::blit(const std::span<const pixel_t> source)
 {
-    std::copy(source.cbegin(), source.cend(), m_vram.begin());
+    std::copy(source.begin(), source.end(), m_vram.begin());
 }
 
 
@@ -137,7 +137,7 @@ void vga::blit(const sprite& source)
     for(std::size_t offset{}; offset != pixels.size(); offset += static_cast<std::size_t>(source.m_width))
     {
         const auto line = pixels.subspan(offset, static_cast<std::size_t>(source.m_width));
-        std::copy(line.cbegin(), line.cend(), ram_it);
+        std::copy(line.begin(), line.end(), ram_it);
         std::advance(ram_it, m_width);
     }
 }
@@ -213,7 +213,7 @@ void vga::set_mode(const vga::mode video_mode)
 ////////////////////////////////////////////////////////////////////////////////
 void vga::set_palette(const std::span<const color> colors)
 {
-    std::copy(colors.cbegin(), colors.cend(), m_palette.begin());
+    std::copy(colors.begin(), colors.end(), m_palette.begin());
 }
 
 
