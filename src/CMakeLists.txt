@@ -44,7 +44,7 @@ target_sources(retro PUBLIC
     "${PROJECT_SOURCE_DIR}/include/retro/vga.hpp"
 )
 
-target_compile_features(retro PUBLIC cxx_std_20)
+target_compile_features(retro PUBLIC cxx_std_23)
 target_compile_options(retro PRIVATE "-Wall" "-Wextra")
 target_link_libraries(retro PUBLIC SDL2::SDL2)
 

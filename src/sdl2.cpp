@@ -8,7 +8,7 @@
 #include <SDL2/SDL.h>
 
 #include <stdexcept>
-#include <type_traits>
+#include <utility>
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -16,13 +16,9 @@ namespace retro
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-using subsystem_t = std::underlying_type_t<sdl2::subsystem>;
-
-
-////////////////////////////////////////////////////////////////////////////////
 sdl2::sdl2(const subsystem flags)
 {
-    if(SDL_Init(static_cast<subsystem_t>(flags)) != 0)
+    if(SDL_Init(std::to_underlying(flags)) != 0)
     {
         throw std::runtime_error(SDL_GetError());
     }
@@ -39,7 +35,7 @@ sdl2::~sdl2()
 ////////////////////////////////////////////////////////////////////////////////
 void sdl2::init_subsystem(const subsystem flags) const
 {
-    if(SDL_InitSubSystem(static_cast<subsystem_t>(flags)) != 0)
+    if(SDL_InitSubSystem(std::to_underlying(flags)) != 0)
     {
         throw std::runtime_error(SDL_GetError());
     }
@@ -49,28 +45,28 @@ void sdl2::init_subsystem(const subsystem flags) const
 ////////////////////////////////////////////////////////////////////////////////
 sdl2::subsystem sdl2::was_init(const subsystem flags) const noexcept
 {
-    return static_cast<subsystem>(SDL_WasInit(static_cast<subsystem_t>(flags)));
+    return sdl2::subsystem{SDL_WasInit(std::to_underlying(flags))};
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 void sdl2::quit_subsystem(const subsystem flags) const noexcept
 {
-    SDL_QuitSubSystem(static_cast<subsystem_t>(flags));
+    SDL_QuitSubSystem(std::to_underlying(flags));
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 constexpr sdl2::subsystem operator|(const sdl2::subsystem lhs, const sdl2::subsystem rhs)
 {
-    return sdl2::subsystem{static_cast<subsystem_t>(lhs) | static_cast<subsystem_t>(rhs)};
+    return sdl2::subsystem{std::to_underlying(lhs) | std::to_underlying(rhs)};
 }
 
 
 ////////////////////////////////////////////////////////////////////////////
 constexpr sdl2::subsystem operator&(const sdl2::subsystem lhs, const sdl2::subsystem rhs)
 {
-    return sdl2::subsystem{static_cast<subsystem_t>(lhs) & static_cast<subsystem_t>(rhs)};
+    return sdl2::subsystem{std::to_underlying(lhs) & std::to_underlying(rhs)};
 }
 
 }   // retro
