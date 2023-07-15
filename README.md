@@ -5,7 +5,7 @@ and VGA eras. It is written in C++20.
 ## Download
 You can get the latest source code from the [Git repository](https://github.com/kj6msg/retro).
 ## Install
-The Retro Computing Library uses CMake.
+The Retro Computing Library uses CMake. Two build options are available: `BUILD_SHARED_LIBS` and `BUILD_EXAMPLES`. Set them to `true` or `false` as desired.
 ## Author
 Ryan Clarke
 ## License
