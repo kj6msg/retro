@@ -36,6 +36,13 @@ sprite::sprite(const int width, const int height, const std::optional<std::span<
 
 
 ////////////////////////////////////////////////////////////////////////////////
+void sprite::fill(const pixel_t color)
+{
+    std::ranges::fill(m_texture, color);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 void sprite::move(const int dx, const int dy) noexcept
 {
     m_x += dx;
