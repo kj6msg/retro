@@ -9,6 +9,8 @@
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
+#include <iterator>
+#include <ranges>
 #include <span>
 #include <utility>
 #include <vector>
@@ -20,29 +22,25 @@ namespace retro
 
 ////////////////////////////////////////////////////////////////////////////////
 font::font(const std::span<const std::byte> glyphs, const int width, const int height)
-    : m_width{width}, m_height{height}
+    : m_width{width}, m_height{height}, m_glyphs(glyphs.size())
 {
-    m_glyphs.resize(glyphs.size());
-    std::copy(glyphs.begin(), glyphs.end(), m_glyphs.begin());
+    std::ranges::copy(glyphs, m_glyphs.begin());
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 vram_t font::glyph(const unsigned char c, const pixel_t fg, const pixel_t bg) const
 {
-    const auto offset = static_cast<std::size_t>(c * m_height);
-    const auto raw_glyph = std::span(m_glyphs).subspan(offset, m_height);
-
+    const auto glyph = std::next(m_glyphs.begin(), m_height * c);
     vram_t new_glyph;
 
-    for(auto line : raw_glyph)
+    for(auto line : std::views::counted(glyph, m_height))
     {
-        for(int i{}; i != 8; ++i)
+        std::for_each_n(std::back_inserter(new_glyph), 8, [=, &line](auto& p)
         {
-            const auto p = ((std::to_integer<int>(line) & 0x80) == 0) ? bg : fg;
-            new_glyph.emplace_back(p);
+            p = ((std::to_integer<int>(line) & 0x80) == 0) ? bg : fg;
             line <<= 1;
-        }
+        });
 
         if(m_width == 9)
         {

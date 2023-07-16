@@ -15,6 +15,7 @@
 #include <cstddef>
 #include <iterator>
 #include <map>
+#include <ranges>
 #include <span>
 #include <stdexcept>
 #include <vector>
@@ -103,7 +104,6 @@ vga::vga(const mode video_mode)
     }
 
     set_mode(video_mode);
-
     reset_palette();
 }
 
@@ -124,21 +124,18 @@ vga::~vga()
 ////////////////////////////////////////////////////////////////////////////////
 void vga::blit(const std::span<const pixel_t> source)
 {
-    std::copy(source.begin(), source.end(), m_vram.begin());
+    std::ranges::copy(source, m_vram.begin());
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 void vga::blit(const sprite& source)
 {
-    const std::span<const pixel_t> pixels{source.m_texture};
-    auto ram_it = std::next(m_vram.begin(), xy_to_addr(source.m_x, source.m_y));
-
-    for(auto offset{0uz}; offset != pixels.size(); offset += static_cast<std::size_t>(source.m_width))
+    for(const auto line : std::views::iota(0, source.m_height))
     {
-        const auto line = pixels.subspan(offset, static_cast<std::size_t>(source.m_width));
-        std::copy(line.begin(), line.end(), ram_it);
-        std::advance(ram_it, m_width);
+        const auto pixels = std::next(source.m_texture.cbegin(), source.m_width * line);
+        const auto vram = std::next(m_vram.begin(), xy_to_addr(source.m_x, source.m_y + line));
+        std::ranges::copy_n(pixels, source.m_width, vram);
     }
 }
 
@@ -153,8 +150,8 @@ color vga::get_color(const int index) const
 ////////////////////////////////////////////////////////////////////////////////
 void vga::putchar(const unsigned char c, const pixel_t fg, const pixel_t bg, const int x, const int y)
 {
-    const auto [font_width, font_height] = m_font.size();
-    sprite s(font_width, font_height, m_font.glyph(c, fg, bg));
+    const auto [width, height] = m_font.size();
+    sprite s{width, height, m_font.glyph(c, fg, bg)};
     s.position(x, y);
     blit(s);
 }
@@ -163,8 +160,8 @@ void vga::putchar(const unsigned char c, const pixel_t fg, const pixel_t bg, con
 ////////////////////////////////////////////////////////////////////////////////
 void vga::reset_palette()
 {
-    auto it = std::copy(ega_palette.cbegin(), ega_palette.cend(), m_palette.begin());
-    std::fill(it, m_palette.end(), color());
+    auto it = std::ranges::copy(ega_palette, m_palette.begin());
+    std::ranges::fill(it.out, m_palette.end(), color::black);
 }
 
 
@@ -213,7 +210,7 @@ void vga::set_mode(const vga::mode video_mode)
 ////////////////////////////////////////////////////////////////////////////////
 void vga::set_palette(const std::span<const color> colors)
 {
-    std::copy(colors.begin(), colors.end(), m_palette.begin());
+    std::ranges::copy(colors, m_palette.begin());
 }
 
 
@@ -236,7 +233,7 @@ void vga::show()
 {
     std::vector<argb_t> pixels(m_width * m_height);
 
-    std::transform(m_vram.cbegin(), m_vram.cend(), pixels.begin(),[&](auto i)
+    std::ranges::transform(m_vram, pixels.begin(), [&](auto i)
     {
         return m_palette.at(static_cast<std::size_t>(i)).to_argb();
     });

@@ -6,10 +6,12 @@
 #ifndef XOR_DEMO_HPP
 #define XOR_DEMO_HPP
 
+#include "retro/types.hpp"
 #include <retro/retro.hpp>
 #include <SDL2/SDL_events.h>
 
 #include <numeric>
+#include <ranges>
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -24,9 +26,9 @@ class xor_demo
         m_vga.set_palette(palette);
 
         // generate XOR pattern
-        for(int y{0}; y != 200; ++y)
+        for(const auto y : std::views::iota(0, 200))
         {
-            for(int x{0}; x != 320; ++x)
+            for(const auto x : std::views::iota(0, 320))
             {
                 const auto pixel = static_cast<retro::pixel_t>((x ^ y) & 255);
                 m_vga.set_pixel(x, y, pixel);

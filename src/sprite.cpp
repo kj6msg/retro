@@ -26,7 +26,7 @@ sprite::sprite(const int width, const int height, const std::optional<std::span<
     {
         const auto p = pixels.value();
         m_texture.resize(p.size());
-        std::copy(p.begin(), p.end(), m_texture.begin());
+        std::ranges::copy(p, m_texture.begin());
     }
     else
     {
@@ -62,7 +62,7 @@ void sprite::position(const SDL_Point& position) noexcept
 ////////////////////////////////////////////////////////////////////////////////
 SDL_Point sprite::position() const noexcept
 {
-    return SDL_Point{m_x, m_y};
+    return SDL_Point{.x = m_x, .y = m_y};
 }
 
 

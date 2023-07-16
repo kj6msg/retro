@@ -12,6 +12,8 @@
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
+#include <numbers>
+#include <ranges>
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -24,7 +26,7 @@ class plasma
         for(auto n{0.0}; auto &color : m_palette)
         {
             constexpr auto a{256.0};
-            constexpr auto b = M_PI / 255.0;
+            constexpr auto b = std::numbers::pi / 255.0;
             const auto rgb = static_cast<retro::color_channel_t>(a * std::sin(b * n));
             color = retro::color(rgb, rgb, rgb);
             n += 1.0;
@@ -36,9 +38,9 @@ class plasma
         constexpr int height{200};
         retro::vram_t img(width * height);
 
-        for(int y{0}; y != height; ++y)
+        for(const auto y : std::views::iota(0, height))
         {
-            for(int x{0}; x != width; ++x)
+            for(const auto x : std::views::iota(0, width))
             {
                 const auto pixel = (std::cosf(static_cast<float>(x) * 0.1f) +
                                     std::sinf(static_cast<float>(y) * 0.1f)) *
@@ -67,7 +69,7 @@ class plasma
                 }
             }
 
-            std::rotate(m_palette.begin(), m_palette.begin() + 1, m_palette.end());
+            std::ranges::rotate(m_palette, m_palette.begin() + 1);
             m_vga.set_palette(m_palette);
             m_vga.show();
         }

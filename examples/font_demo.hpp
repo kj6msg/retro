@@ -9,6 +9,8 @@
 #include <retro/retro.hpp>
 #include <SDL2/SDL.h>
 
+#include <ranges>
+
 
 ////////////////////////////////////////////////////////////////////////////////
 class font_demo
@@ -16,7 +18,7 @@ class font_demo
   public:
     font_demo() : m_sdl2(retro::sdl2::subsystem::video), m_vga(retro::vga::mode::vga_13h)
     {
-        for(int c{0}, x{0}, y{0}; c != 256; ++c)
+        for(int x{}, y{}; const auto c : std::views::iota(0, 256))
         {
             m_vga.putchar(static_cast<unsigned char>(c), 7, 0, x, y);
 

@@ -13,6 +13,7 @@
 #include <cmath>
 #include <cstddef>
 #include <random>
+#include <ranges>
 #include <span>
 
 
@@ -89,15 +90,15 @@ class fire
             }
 
             // generate hot spots on bottom row of pixels
-            std::generate(img.end() - width, img.end(), [&]()
+            std::ranges::generate_n(img.rbegin(), width, [&]()
             {
                 return dist(engine);
             });
 
             // generate fire
-            for(int y{0}; y != height - 1; ++y)
+            for(const auto y : std::views::iota(0, height - 1))
             {
-                for(int x{0}; x != width; ++x)
+                for(const auto x : std::views::iota(0, width))
                 {
                     // Left below, right below, center below, and center two below
                     // pixels. The divisor controls the height of the fire.
