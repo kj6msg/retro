@@ -10,7 +10,6 @@
 #include <retro/font.hpp>
 #include <retro/sdl2.hpp>
 #include <retro/sprite.hpp>
-#include <retro/types.hpp>
 #include <retro/vga.hpp>
 
 

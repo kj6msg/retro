@@ -10,6 +10,7 @@
 #include <SDL2/SDL.h>
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <cstddef>
 #include <numbers>
@@ -20,14 +21,14 @@
 class plasma
 {
   public:
-    plasma() : m_sdl2(retro::sdl2::subsystem::video), m_vga(retro::vga::mode::vga_13h), m_palette(256)
+    plasma() : m_sdl2(retro::sdl2::subsystem::video), m_vga(retro::vga::mode::vga_13h)
     {
         // generate palette - sinusoidal black to white to black
         for(auto n{0.0}; auto &color : m_palette)
         {
             constexpr auto a{256.0};
             constexpr auto b = std::numbers::pi / 255.0;
-            const auto rgb = static_cast<retro::color_channel_t>(a * std::sin(b * n));
+            const auto rgb = static_cast<int>(a * std::sin(b * n));
             color = retro::color(rgb, rgb, rgb);
             n += 1.0;
         }
@@ -36,18 +37,18 @@ class plasma
         // generate plasma
         constexpr int width{320};
         constexpr int height{200};
-        retro::vram_t img(width * height);
+        std::array<int, width * height> img;
 
         for(const auto y : std::views::iota(0, height))
         {
             for(const auto x : std::views::iota(0, width))
             {
-                const auto pixel = (std::cosf(static_cast<float>(x) * 0.1f) +
-                                    std::sinf(static_cast<float>(y) * 0.1f)) *
-                                    63.5f + 128.0f;
+                const auto pixel = (std::cos(static_cast<double>(x) * 0.1) +
+                                    std::sin(static_cast<double>(y) * 0.1)) *
+                                    63.5 + 128.0;
 
                 const auto i = static_cast<std::size_t>(x + width * y);
-                img[i] = static_cast<retro::pixel_t>(pixel);
+                img[i] = static_cast<int>(pixel);
             }
         }
 
@@ -80,7 +81,7 @@ class plasma
 
     retro::sdl2 m_sdl2;
     retro::vga m_vga;
-    retro::palette_t m_palette;
+    std::array<retro::color, 256> m_palette;
 };
 
 #endif  // PLASMA_HPP

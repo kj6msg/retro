@@ -5,7 +5,6 @@
 
 #include "retro/color.hpp"
 #include "retro/sprite.hpp"
-#include "retro/types.hpp"
 #include "retro/vga.hpp"
 
 #include <SDL2/SDL.h>
@@ -122,7 +121,7 @@ vga::~vga()
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void vga::blit(const std::span<const pixel_t> source)
+void vga::blit(const std::span<const int> source)
 {
     std::ranges::copy(source, m_vram.begin());
 }
@@ -134,7 +133,8 @@ void vga::blit(const sprite& source)
     for(const auto line : std::views::iota(0, source.m_height))
     {
         const auto pixels = std::next(source.m_texture.cbegin(), source.m_width * line);
-        const auto vram = std::next(m_vram.begin(), xy_to_addr(source.m_x, source.m_y + line));
+        const auto vram = std::next(m_vram.begin(),
+            static_cast<std::ptrdiff_t>(xy_to_index(source.m_x, source.m_y + line)));
         std::ranges::copy_n(pixels, source.m_width, vram);
     }
 }
@@ -148,7 +148,7 @@ color vga::get_color(const int index) const
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void vga::putchar(const unsigned char c, const pixel_t fg, const pixel_t bg, const int x, const int y)
+void vga::putchar(const unsigned char c, const int fg, const int bg, const int x, const int y)
 {
     const auto [width, height] = m_font.size();
     sprite s{width, height, m_font.glyph(c, fg, bg)};
@@ -180,9 +180,11 @@ void vga::set_mode(const vga::mode video_mode)
     m_height = mode.height;
     m_num_colors = mode.num_colors;
 
-    m_vram.resize(m_width * m_height);
-    m_palette.resize(m_num_colors);
+    m_vram.resize(static_cast<std::size_t>(m_width * m_height));
+    m_palette.resize(static_cast<std::size_t>(m_num_colors));
     m_font = mode.font;
+
+    m_pixels.resize(static_cast<std::size_t>(m_width * m_height));
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
     SDL_RenderSetLogicalSize(m_renderer, m_width, m_height);
@@ -215,31 +217,29 @@ void vga::set_palette(const std::span<const color> colors)
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void vga::set_pixel(const int x, const int y, const pixel_t color_index)
+void vga::set_pixel(const int x, const int y, const int color_index)
 {
-    m_vram.at(xy_to_addr(x, y)) = color_index;
+    m_vram.at(xy_to_index(x, y)) = color_index;
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void vga::set_pixel(const SDL_Point& position, const pixel_t color_index)
+void vga::set_pixel(const SDL_Point& position, const int color_index)
 {
-    m_vram.at(xy_to_addr(position.x, position.y)) = color_index;
+    m_vram.at(xy_to_index(position.x, position.y)) = color_index;
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 void vga::show()
 {
-    std::vector<argb_t> pixels(m_width * m_height);
-
-    std::ranges::transform(m_vram, pixels.begin(), [&](auto i)
+    std::ranges::transform(m_vram, m_pixels.begin(), [&](auto i)
     {
         return m_palette.at(static_cast<std::size_t>(i)).to_argb();
     });
 
-    const int pitch = m_width * sizeof(argb_t);
-    SDL_UpdateTexture(m_texture, nullptr, pixels.data(), pitch);
+    const auto pitch = m_width * static_cast<int>(sizeof(std::uint32_t));
+    SDL_UpdateTexture(m_texture, nullptr, m_pixels.data(), pitch);
 
     SDL_RenderClear(m_renderer);
     SDL_RenderCopy(m_renderer, m_texture, nullptr, nullptr);
@@ -248,7 +248,7 @@ void vga::show()
 
 
 ////////////////////////////////////////////////////////////////////////////////
-constexpr std::size_t vga::xy_to_addr(const int x, const int y) noexcept
+constexpr std::size_t vga::xy_to_index(const int x, const int y) noexcept
 {
     return static_cast<std::size_t>(x + m_width * y);
 }

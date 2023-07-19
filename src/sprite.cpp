@@ -4,7 +4,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "retro/sprite.hpp"
-#include "retro/vga.hpp"
 
 #include <SDL2/SDL_rect.h>
 
@@ -19,7 +18,7 @@ namespace retro
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-sprite::sprite(const int width, const int height, const std::optional<std::span<const pixel_t>>& pixels)
+sprite::sprite(const int width, const int height, const std::optional<std::span<const int>>& pixels)
     : m_width{width}, m_height{height}
 {
     if(pixels.has_value())
@@ -36,7 +35,7 @@ sprite::sprite(const int width, const int height, const std::optional<std::span<
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void sprite::fill(const pixel_t color)
+void sprite::fill(const int color)
 {
     std::ranges::fill(m_texture, color);
 }

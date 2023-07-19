@@ -6,8 +6,6 @@
 #ifndef RETRO_FONT_HPP
 #define RETRO_FONT_HPP
 
-#include <retro/types.hpp>
-
 #include <cstddef>
 #include <cstdint>
 #include <span>
@@ -67,7 +65,7 @@ class font
     /// \param bg background color
     /// \return pixelized glyph
     ////////////////////////////////////////////////////////////////////////////
-    [[nodiscard]] vram_t glyph(unsigned char c, pixel_t fg, pixel_t bg) const;
+    [[nodiscard]] std::vector<int> glyph(unsigned char c, int fg, int bg) const;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Get size of font.

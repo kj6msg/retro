@@ -6,10 +6,10 @@
 #ifndef XOR_DEMO_HPP
 #define XOR_DEMO_HPP
 
-#include "retro/types.hpp"
 #include <retro/retro.hpp>
 #include <SDL2/SDL_events.h>
 
+#include <array>
 #include <numeric>
 #include <ranges>
 
@@ -21,7 +21,7 @@ class xor_demo
     xor_demo() : m_sdl2(retro::sdl2::subsystem::video), m_vga(retro::vga::mode::vga_13h)
     {
         // generate palette
-        retro::palette_t palette(256);
+        std::array<retro::color, 256> palette;
         std::iota(palette.begin(), palette.end(), retro::color{});
         m_vga.set_palette(palette);
 
@@ -30,7 +30,7 @@ class xor_demo
         {
             for(const auto x : std::views::iota(0, 320))
             {
-                const auto pixel = static_cast<retro::pixel_t>((x ^ y) & 255);
+                const auto pixel = static_cast<int>((x ^ y) & 255);
                 m_vga.set_pixel(x, y, pixel);
             }
         }

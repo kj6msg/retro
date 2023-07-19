@@ -9,7 +9,7 @@
 #include <retro/retro.hpp>
 #include <SDL2/SDL.h>
 
-#include <algorithm>
+#include <array>
 #include <cmath>
 #include <cstddef>
 #include <random>
@@ -24,7 +24,7 @@ class fire
     fire() : m_sdl2(retro::sdl2::subsystem::video), m_vga(retro::vga::mode::vga_13h)
     {
         // generate palette
-        retro::palette_t palette(256);
+        std::array<retro::color, 256> palette;
         const std::span<retro::color> colors{palette};
 
         // 33 colors: black (0, 0, 0) to red (128, 0, 0)
@@ -56,9 +56,9 @@ class fire
         for(int n{96}; auto& color : colors.subspan(96, 160))
         {
             const auto t = (static_cast<float>(n) - 96.0f) / (255.0f - 96.0f);
-            const auto r = static_cast<retro::color_channel_t>(std::lerp(192.0f, 255.0f, t));
-            const auto g = static_cast<retro::color_channel_t>(std::lerp(192.0f, 255.0f, t));
-            const auto b = static_cast<retro::color_channel_t>(std::lerp(0.0f, 255.0f, t));
+            const auto r = static_cast<int>(std::lerp(192.0f, 255.0f, t));
+            const auto g = static_cast<int>(std::lerp(192.0f, 255.0f, t));
+            const auto b = static_cast<int>(std::lerp(0.0f, 255.0f, t));
 
             color = retro::color(r, g, b);
             ++n;
@@ -73,11 +73,12 @@ class fire
     void run()
     {
         std::default_random_engine engine(std::random_device{}());
-        std::uniform_int_distribution<retro::pixel_t> dist(0, 255);
+        std::uniform_int_distribution<int> dist(0, 255);
 
         constexpr int width{320};
         constexpr int height{200};
-        retro::vram_t img(width * height);
+        std::array<int, width * height> img;
+        img.fill(0);
 
         while(m_running)
         {
@@ -89,11 +90,10 @@ class fire
                 }
             }
 
-            // generate hot spots on bottom row of pixels
-            std::ranges::generate_n(img.rbegin(), width, [&]()
+            for(auto& i : img | std::views::reverse | std::views::take(width))
             {
-                return dist(engine);
-            });
+                i = dist(engine);
+            }
 
             // generate fire
             for(const auto y : std::views::iota(0, height - 1))
@@ -114,7 +114,7 @@ class fire
                     pixel /= 4.03f;
 
                     const auto i = static_cast<std::size_t>(x + width * y);
-                    img[i] = static_cast<retro::pixel_t>(pixel);
+                    img[i] = static_cast<int>(pixel);
                 }
             }
 

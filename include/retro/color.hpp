@@ -6,8 +6,6 @@
 #ifndef RETRO_COLOR_HPP
 #define RETRO_COLOR_HPP
 
-#include <retro/types.hpp>
-
 #include <cstdint>
 
 
@@ -30,13 +28,13 @@ class color
     /// \param g green value (0-255)
     /// \param b blue value (0-255)
     ////////////////////////////////////////////////////////////////////////////
-    constexpr color(color_channel_t r, color_channel_t g, color_channel_t b) noexcept;
+    constexpr color(int r, int g, int b) noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Create color from ARGB value.
     /// \param argb 32-bit ARGB value
     ////////////////////////////////////////////////////////////////////////////
-    constexpr color(argb_t argb) noexcept;
+    constexpr color(std::uint32_t argb) noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Copy constructor.
@@ -66,7 +64,7 @@ class color
     /// \brief Convert color to 32-bit ARGB value.
     /// \return 32-bit ARGB value
     ////////////////////////////////////////////////////////////////////////////
-    [[nodiscard]] constexpr argb_t to_argb() const noexcept;
+    [[nodiscard]] constexpr std::uint32_t to_argb() const noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Overload of the binary + operator.
@@ -80,7 +78,7 @@ class color
     /// \param b right operand
     /// \return result of a + b
     ////////////////////////////////////////////////////////////////////////////
-    color operator+(color_channel_t b) const noexcept;
+    color operator+(int b) const noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Overload of the binary - operator.
@@ -94,7 +92,7 @@ class color
     /// \param b right operand
     /// \return result of a - b
     ////////////////////////////////////////////////////////////////////////////
-    color operator-(color_channel_t b) const noexcept;
+    color operator-(int b) const noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Overload of the binary * operator.
@@ -108,7 +106,7 @@ class color
     /// \param b right operand
     /// \return result of a * b
     ////////////////////////////////////////////////////////////////////////////
-    color operator*(color_channel_t b) const noexcept;
+    color operator*(int b) const noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Overload of the += assignment operator.
@@ -122,7 +120,7 @@ class color
     /// \param b right operand
     /// \return result of a += b
     ////////////////////////////////////////////////////////////////////////////
-    color& operator+=(color_channel_t b) noexcept;
+    color& operator+=(int b) noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Overload of the -= assignment operator.
@@ -136,7 +134,7 @@ class color
     /// \param b right operand
     /// \return result of a -= b
     ////////////////////////////////////////////////////////////////////////////
-    color& operator-=(color_channel_t b) noexcept;
+    color& operator-=(int b) noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Overload of prefix increment operator.
@@ -181,9 +179,9 @@ class color
     static const color bright_white;
 
   private:
-    color_channel_t m_r{};
-    color_channel_t m_g{};
-    color_channel_t m_b{};
+    int m_r{};
+    int m_g{};
+    int m_b{};
 };
 
 
@@ -194,37 +192,36 @@ class color
 /// \param b blue value (0-255)
 /// \return 32-bit ARGB value
 ////////////////////////////////////////////////////////////////////////////////
-[[nodiscard]] constexpr argb_t make_argb(const color_channel_t r, const color_channel_t g, const color_channel_t b) noexcept
+[[nodiscard]] constexpr std::uint32_t make_argb(const int r, const int g, const int b) noexcept
 {
-    constexpr color_channel_t a{255};
+    std::uint32_t argb{0xff000000u};
 
-    auto argb = static_cast<argb_t>(b);
-    argb |= static_cast<argb_t>(g) << 8;
-    argb |= static_cast<argb_t>(r) << 16;
-    argb |= static_cast<argb_t>(a) << 24;
+    argb |= static_cast<std::uint32_t>(b);
+    argb |= static_cast<std::uint32_t>(g) << 8;
+    argb |= static_cast<std::uint32_t>(r) << 16;
 
     return argb;
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-constexpr color::color(const color_channel_t r, const color_channel_t g, const color_channel_t b) noexcept
+constexpr color::color(const int r, const int g, const int b) noexcept
     : m_r{r}, m_g{g}, m_b{b}
 {
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-constexpr color::color(const argb_t argb) noexcept
+constexpr color::color(const std::uint32_t argb) noexcept
 {
-    m_r = static_cast<color_channel_t>((argb & 0xff0000) >> 16);
-    m_g = static_cast<color_channel_t>((argb & 0xff00) >> 8);
-    m_b = static_cast<color_channel_t>(argb & 0xff);
+    m_r = static_cast<int>((argb & 0x00ff0000u) >> 16);
+    m_g = static_cast<int>((argb & 0x0000ff00u) >> 8);
+    m_b = static_cast<int>(argb & 0x000000ffu);
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-constexpr argb_t color::to_argb() const noexcept
+constexpr std::uint32_t color::to_argb() const noexcept
 {
     return make_argb(m_r, m_g, m_b);
 }

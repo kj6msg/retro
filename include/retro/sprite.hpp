@@ -6,8 +6,6 @@
 #ifndef RETRO_SPRITE_HPP
 #define RETRO_SPRITE_HPP
 
-#include <retro/types.hpp>
-
 #include <optional>
 #include <span>
 #include <vector>
@@ -33,7 +31,7 @@ class sprite
     /// \param height height in pixels
     /// \param pixels pixel data [optional]
     ////////////////////////////////////////////////////////////////////////////
-    sprite(int width, int height, const std::optional<std::span<const pixel_t>>& pixels = std::nullopt);
+    sprite(int width, int height, const std::optional<std::span<const int>>& pixels = std::nullopt);
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Copy constructor.
@@ -63,7 +61,7 @@ class sprite
     /// \brief Fill sprite with a color.
     /// \param color fill color [0-255]
     ////////////////////////////////////////////////////////////////////////////
-    void fill(pixel_t color);
+    void fill(int color);
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Move sprite by a given offset.
@@ -105,7 +103,7 @@ class sprite
     int m_x{};
     int m_y{};
 
-    vram_t m_texture;
+    std::vector<int> m_texture;
 };
 
 }   // retro

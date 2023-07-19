@@ -7,7 +7,6 @@
 #define RETRO_VGA_HPP
 
 #include <retro/font.hpp>
-#include <retro/types.hpp>
 
 #include <cstddef>
 #include <cstdint>
@@ -60,7 +59,7 @@ class vga
     /// \brief Blit a full size indexed image to the screen.
     /// \param source indexed pixels
     ////////////////////////////////////////////////////////////////////////////
-    void blit(std::span<const pixel_t> source);
+    void blit(std::span<const int> source);
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Blit a sprite to the screen
@@ -83,7 +82,7 @@ class vga
     /// \param x x-coordinate
     /// \param y y-coordinate
     ////////////////////////////////////////////////////////////////////////////
-    void putchar(unsigned char c, pixel_t fg, pixel_t bg, int x, int y);
+    void putchar(unsigned char c, int fg, int bg, int x, int y);
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Reset to the default palette.
@@ -115,14 +114,14 @@ class vga
     /// \param y the y location of the pixel
     /// \param color_index indexed color (0-255)
     ////////////////////////////////////////////////////////////////////////////
-    void set_pixel(int x, int y, pixel_t color_index);
+    void set_pixel(int x, int y, int color_index);
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Set a pixel to an indexed color.
     /// \param position position of the pixel
     /// \param color_index indexed color (0-255)
     ////////////////////////////////////////////////////////////////////////////
-    void set_pixel(const SDL_Point& position, pixel_t color_index);
+    void set_pixel(const SDL_Point& position, int color_index);
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Show the screen.
@@ -142,7 +141,7 @@ class vga
     /// \param y y location
     /// \return linear address of coordinate
     ////////////////////////////////////////////////////////////////////////////
-    [[nodiscard]] constexpr std::size_t xy_to_addr(int x, int y) noexcept;
+    [[nodiscard]] constexpr std::size_t xy_to_index(int x, int y) noexcept;
 
     int m_width{};
     int m_height{};
@@ -152,9 +151,11 @@ class vga
     SDL_Renderer* m_renderer{nullptr};
     SDL_Texture*  m_texture{nullptr};
 
-    vram_t m_vram;
-    palette_t m_palette;
+    std::vector<int> m_vram;
+    std::vector<color> m_palette;
     font m_font;
+
+    std::vector<std::uint32_t> m_pixels;
 };
 
 }   // retro

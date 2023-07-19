@@ -4,7 +4,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "retro/color.hpp"
-#include "retro/types.hpp"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -25,7 +24,7 @@ color color::operator+(const color& b) const noexcept
 
 
 ////////////////////////////////////////////////////////////////////////////////
-color color::operator+(const color_channel_t b) const noexcept
+color color::operator+(const int b) const noexcept
 {
     color temp;
 
@@ -51,7 +50,7 @@ color color::operator-(const color& b) const noexcept
 
 
 ////////////////////////////////////////////////////////////////////////////////
-color color::operator-(const color_channel_t b) const noexcept
+color color::operator-(const int b) const noexcept
 {
     color temp;
 
@@ -77,7 +76,7 @@ color color::operator*(const color& b) const noexcept
 
 
 ////////////////////////////////////////////////////////////////////////////////
-color color::operator*(const color_channel_t b) const noexcept
+color color::operator*(const int b) const noexcept
 {
     color temp;
 
@@ -101,7 +100,7 @@ color& color::operator+=(const color& b) noexcept
 
 
 ////////////////////////////////////////////////////////////////////////////////
-color& color::operator+=(const color_channel_t b) noexcept
+color& color::operator+=(const int b) noexcept
 {
     m_r += b;
     m_g += b;
@@ -123,7 +122,7 @@ color& color::operator-=(const color& b) noexcept
 
 
 ////////////////////////////////////////////////////////////////////////////////
-color& color::operator-=(const color_channel_t b) noexcept
+color& color::operator-=(const int b) noexcept
 {
     m_r -= b;
     m_g -= b;
