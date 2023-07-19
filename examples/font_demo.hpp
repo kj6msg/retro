@@ -16,7 +16,7 @@
 class font_demo
 {
   public:
-    font_demo() : m_sdl2(retro::sdl2::subsystem::video), m_vga(retro::vga::mode::vga_13h)
+    font_demo()
     {
         for(int x{}, y{}; const auto c : std::views::iota(0, 256))
         {
@@ -24,10 +24,11 @@ class font_demo
 
             constexpr int font_width{8};
             constexpr int font_height{8};
+            constexpr int columns{16};
 
             x += font_width;
 
-            if(x == font_width * 16)
+            if(x == font_width * columns)
             {
                 x = 0;
                 y += font_height;
@@ -57,8 +58,8 @@ class font_demo
   private:
     bool m_running{false};
 
-    retro::sdl2 m_sdl2;
-    retro::vga m_vga;
+    retro::sdl2 m_sdl2{retro::sdl2::subsystem::video};
+    retro::vga m_vga{retro::vga::mode::vga_13h};
 };
 
 #endif  // FONT_DEMO_HPP

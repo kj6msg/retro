@@ -21,10 +21,10 @@
 class plasma
 {
   public:
-    plasma() : m_sdl2(retro::sdl2::subsystem::video), m_vga(retro::vga::mode::vga_13h)
+    plasma()
     {
         // generate palette - sinusoidal black to white to black
-        for(auto n{0.0}; auto &color : m_palette)
+        for(double n{0.0}; auto &color : m_palette)
         {
             constexpr auto a{256.0};
             constexpr auto b = std::numbers::pi / 255.0;
@@ -32,6 +32,7 @@ class plasma
             color = retro::color(rgb, rgb, rgb);
             n += 1.0;
         }
+
         m_vga.set_palette(m_palette);
 
         // generate plasma
@@ -39,17 +40,15 @@ class plasma
         constexpr int height{200};
         std::array<int, width * height> img;
 
-        for(const auto y : std::views::iota(0, height))
+        for(int i{}; auto& pixel : img)
         {
-            for(const auto x : std::views::iota(0, width))
-            {
-                const auto pixel = (std::cos(static_cast<double>(x) * 0.1) +
-                                    std::sin(static_cast<double>(y) * 0.1)) *
-                                    63.5 + 128.0;
-
-                const auto i = static_cast<std::size_t>(x + width * y);
-                img[i] = static_cast<int>(pixel);
-            }
+            const auto x = i % width;
+            const auto y = i / width;
+            const auto color_index = (std::cos(static_cast<double>(x) * 0.1) +
+                                      std::sin(static_cast<double>(y) * 0.1)) *
+                                     63.5 + 128.0;
+            pixel = static_cast<int>(color_index);
+            ++i;
         }
 
         m_vga.blit(img);
@@ -79,8 +78,8 @@ class plasma
   private:
     bool m_running{false};
 
-    retro::sdl2 m_sdl2;
-    retro::vga m_vga;
+    retro::sdl2 m_sdl2{retro::sdl2::subsystem::video};
+    retro::vga m_vga{retro::vga::mode::vga_13h};
     std::array<retro::color, 256> m_palette;
 };
 
