@@ -5,11 +5,11 @@
 
 #include "retro/sprite.hpp"
 
-#include <SDL2/SDL_rect.h>
-
 #include <algorithm>
+#include <cstddef>
 #include <optional>
 #include <span>
+#include <utility>
 #include <vector>
 
 
@@ -50,6 +50,13 @@ void sprite::move(const int dx, const int dy) noexcept
 
 
 ////////////////////////////////////////////////////////////////////////////////
+const std::vector<int>& sprite::pixels() const noexcept
+{
+    return m_texture;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 void sprite::position(const int x, const int y) noexcept
 {
     m_x = x;
@@ -58,24 +65,16 @@ void sprite::position(const int x, const int y) noexcept
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void sprite::position(const SDL_Point& position) noexcept
+std::pair<int, int> sprite::position() const noexcept
 {
-    m_x = position.x;
-    m_y = position.y;
+    return std::make_pair(m_x, m_y);
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-SDL_Point sprite::position() const noexcept
+std::pair<int, int> sprite::size() const noexcept
 {
-    return SDL_Point{.x = m_x, .y = m_y};
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-std::size_t sprite::size() const noexcept
-{
-    return m_texture.size();
+    return std::make_pair(m_width, m_height);
 }
 
 }   // retro

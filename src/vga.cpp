@@ -12,7 +12,6 @@
 #include <algorithm>
 #include <array>
 #include <cstddef>
-#include <iterator>
 #include <map>
 #include <ranges>
 #include <span>
@@ -130,12 +129,16 @@ void vga::blit(const std::span<const int> source)
 ////////////////////////////////////////////////////////////////////////////////
 void vga::blit(const sprite& source)
 {
-    for(const auto line : std::views::iota(0, source.m_height))
+    const auto [width, height] = source.size();
+    const auto [x, y] = source.position();
+    const auto pixels = source.pixels();
+    
+    // copy the sprite pixels line by line to the video RAM
+    for(const auto line : std::views::iota(0, height))
     {
-        const auto pixels = std::next(source.m_texture.cbegin(), source.m_width * line);
-        const auto vram = std::next(m_vram.begin(),
-            static_cast<std::ptrdiff_t>(xy_to_index(source.m_x, source.m_y + line)));
-        std::ranges::copy_n(pixels, source.m_width, vram);
+        const auto p = pixels | std::views::drop(width * line) | std::views::take(width);
+        const auto v = m_vram | std::views::drop(xy_to_index(x, y + line));
+        std::ranges::copy(p, v.begin());
     }
 }
 
