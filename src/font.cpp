@@ -30,24 +30,24 @@ font::font(const std::span<const std::byte> glyphs, const int width, const int h
 ////////////////////////////////////////////////////////////////////////////////
 std::vector<int> font::glyph(const unsigned char c, const int fg, const int bg) const
 {
-    const auto glyph = std::next(m_glyphs.begin(), m_height * c);
-    std::vector<int> new_glyph;
+    const auto glyph = m_glyphs | std::views::drop(m_height * c) | std::views::take(m_height);
+    std::vector<int> color_glyph;
 
-    for(auto line : std::views::counted(glyph, m_height))
+    for(auto line : glyph)
     {
-        std::for_each_n(std::back_inserter(new_glyph), 8, [=, &line](auto& p)
+        std::for_each_n(std::back_inserter(color_glyph), 8, [=, &line](auto& color)
         {
-            p = ((std::to_integer<std::uint8_t>(line) & 0x80u) == 0u) ? bg : fg;
+            color = ((std::to_integer<std::uint8_t>(line) & 0x80u) == 0u) ? bg : fg;
             line <<= 1;
         });
 
         if(m_width == 9)
         {
-            new_glyph.emplace_back(bg);
+            color_glyph.emplace_back(bg);
         }
     }
 
-    return new_glyph;
+    return color_glyph;
 }
 
 
