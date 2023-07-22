@@ -9,6 +9,7 @@
 #include <cstddef>
 #include <optional>
 #include <span>
+#include <stdexcept>
 #include <utility>
 #include <vector>
 
@@ -21,6 +22,11 @@ namespace retro
 sprite::sprite(const int width, const int height, const std::optional<std::span<const int>>& pixels)
     : m_width{width}, m_height{height}
 {
+    if(width < 1 || height < 1)
+    {
+        throw std::invalid_argument("sprite ctor has an invalid argument");
+    }
+    
     if(pixels.has_value())
     {
         const auto p = pixels.value();
@@ -37,6 +43,11 @@ sprite::sprite(const int width, const int height, const std::optional<std::span<
 ////////////////////////////////////////////////////////////////////////////////
 void sprite::fill(const int color)
 {
+    if(color < 0)
+    {
+        throw std::invalid_argument("sprite::fill has an invalid argument");
+    }
+    
     std::ranges::fill(m_texture, color);
 }
 
