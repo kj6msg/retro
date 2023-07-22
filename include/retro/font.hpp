@@ -7,7 +7,6 @@
 #define RETRO_FONT_HPP
 
 #include <cstddef>
-#include <cstdint>
 #include <span>
 #include <utility>
 #include <vector>

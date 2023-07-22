@@ -33,6 +33,7 @@ std::vector<int> font::glyph(const unsigned char c, const int fg, const int bg) 
     const auto glyph = m_glyphs | std::views::drop(m_height * c) | std::views::take(m_height);
     std::vector<int> color_glyph;
 
+    // construct a colorized glyph with the passed foreground and background colors
     for(auto line : glyph)
     {
         std::for_each_n(std::back_inserter(color_glyph), 8, [=, &line](auto& color)
