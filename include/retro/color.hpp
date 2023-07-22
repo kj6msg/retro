@@ -7,6 +7,7 @@
 #define RETRO_COLOR_HPP
 
 #include <cstdint>
+#include <stdexcept>
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -28,7 +29,7 @@ class color
     /// \param g green value (0-255)
     /// \param b blue value (0-255)
     ////////////////////////////////////////////////////////////////////////////
-    constexpr color(int r, int g, int b) noexcept;
+    constexpr color(int r, int g, int b);
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Create color from ARGB value.
@@ -64,7 +65,7 @@ class color
     /// \brief Convert color to 32-bit ARGB value.
     /// \return 32-bit ARGB value
     ////////////////////////////////////////////////////////////////////////////
-    [[nodiscard]] constexpr std::uint32_t to_argb() const noexcept;
+    [[nodiscard]] constexpr std::uint32_t to_argb() const;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Overload of the binary + operator.
@@ -137,6 +138,20 @@ class color
     color& operator-=(int b) noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
+    /// \brief Overload of the *= assignment operator.
+    /// \param b right operand
+    /// \return result of a *= b
+    ////////////////////////////////////////////////////////////////////////////
+    color& operator*=(const color& b) noexcept;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief Overload of the *= assignment operator.
+    /// \param b right operand
+    /// \return result of a *= b
+    ////////////////////////////////////////////////////////////////////////////
+    color& operator*=(int b) noexcept;
+
+    ////////////////////////////////////////////////////////////////////////////
     /// \brief Overload of prefix increment operator.
     /// \return result of ++a
     ////////////////////////////////////////////////////////////////////////////
@@ -192,8 +207,13 @@ class color
 /// \param b blue value (0-255)
 /// \return 32-bit ARGB value
 ////////////////////////////////////////////////////////////////////////////////
-[[nodiscard]] constexpr std::uint32_t make_argb(const int r, const int g, const int b) noexcept
+[[nodiscard]] constexpr std::uint32_t make_argb(const int r, const int g, const int b)
 {
+    if(r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
+    {
+        throw std::invalid_argument("make_argb has an invalid argument");
+    }
+    
     std::uint32_t argb{0xff000000u};
 
     argb |= static_cast<std::uint32_t>(b);
@@ -205,9 +225,16 @@ class color
 
 
 ////////////////////////////////////////////////////////////////////////////////
-constexpr color::color(const int r, const int g, const int b) noexcept
-    : m_r{r}, m_g{g}, m_b{b}
+constexpr color::color(const int r, const int g, const int b)
 {
+    if(r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
+    {
+        throw std::invalid_argument("color ctor has an invalid argument");
+    }
+
+    m_r = r;
+    m_g = g;
+    m_b = b;
 }
 
 
@@ -221,7 +248,7 @@ constexpr color::color(const std::uint32_t argb) noexcept
 
 
 ////////////////////////////////////////////////////////////////////////////////
-constexpr std::uint32_t color::to_argb() const noexcept
+constexpr std::uint32_t color::to_argb() const
 {
     return make_argb(m_r, m_g, m_b);
 }
