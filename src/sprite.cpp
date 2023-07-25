@@ -43,7 +43,7 @@ sprite::sprite(const int width, const int height, const std::optional<std::span<
 ////////////////////////////////////////////////////////////////////////////////
 void sprite::fill(const int color)
 {
-    if(color < 0)
+    if(color < 0 || color > 255)
     {
         throw std::invalid_argument("sprite::fill has an invalid argument");
     }

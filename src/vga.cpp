@@ -129,15 +129,29 @@ void vga::blit(const std::span<const int> source)
 ////////////////////////////////////////////////////////////////////////////////
 void vga::blit(const sprite& source)
 {
+    const auto [x0, y0] = source.position();
     const auto [width, height] = source.size();
-    const auto [x, y] = source.position();
-    const auto pixels = source.pixels();
-    
-    // copy the sprite pixels line by line to the video RAM
-    for(const auto line : std::views::iota(0, height))
+
+    // sprite completely out of bounds
+    if((x0 + width) < 0 || x0 >= m_width || (y0 + height) < 0 || y0 >= m_height)
     {
-        const auto p = pixels | std::views::drop(width * line) | std::views::take(width);
-        const auto v = m_vram | std::views::drop(xy_to_index(x, y + line));
+        return;
+    }
+
+    const auto pixels = source.pixels();
+
+    // bounding box and on-screen adjusted coordinates
+    const auto l0 = std::max(0, -y0);                   // first visible line
+    const auto l1 = std::min(height, m_height - y0);    // last visible line
+    const auto w0 = std::max(0, -x0);                   // line start
+    const auto w1 = std::min(width - w0, m_width - x0); // line end
+    const auto x1 = std::max(0, x0);                    // adjust on-screen x
+    const auto y1 = std::max(0, y0);                    // adjust on-screen y
+
+    for(const auto line : std::views::iota(l0, l1))
+    {
+        const auto p = pixels | std::views::drop(width * line + w0) | std::views::take(w1);
+        const auto v = m_vram | std::views::drop(xy_to_index(x1, y1 + (line - l0)));
         std::ranges::copy(p, v.begin());
     }
 }
@@ -146,15 +160,26 @@ void vga::blit(const sprite& source)
 ////////////////////////////////////////////////////////////////////////////////
 color vga::get_color(const int index) const
 {
-    return m_palette.at(static_cast<std::size_t>(index));
+    if(index < 0 || index > std::ssize(m_palette))
+    {
+        std::invalid_argument("vga::get_color has an invalid argument");
+    }
+
+    return m_palette[static_cast<std::size_t>(index)];
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 void vga::putchar(const unsigned char c, const int fg, const int bg, const int x, const int y)
 {
+    if(fg < 0 || fg > std::ssize(m_palette) || bg < 0 || bg > std::ssize(m_palette))
+    {
+        throw std::invalid_argument("vga::putchar has an invalid argument");
+    }
+    
     const auto [width, height] = m_font.size();
-    sprite s{width, height, m_font.glyph(c, fg, bg)};
+    const auto glyph = m_font.glyph(c, fg, bg);
+    sprite s{width, height, glyph};
     s.position(x, y);
     blit(s);
 }
@@ -164,14 +189,19 @@ void vga::putchar(const unsigned char c, const int fg, const int bg, const int x
 void vga::reset_palette()
 {
     auto it = std::ranges::copy(ega_palette, m_palette.begin());
-    std::ranges::fill(it.out, m_palette.end(), color::black);
+    std::fill(it.out, m_palette.end(), color::black);
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 void vga::set_color(const int index, const color& c)
 {
-    m_palette.at(static_cast<std::size_t>(index)) = c;
+    if(index < 0 || index > std::ssize(m_palette))
+    {
+        throw std::invalid_argument("vga::set_color has an invalid argument");
+    }
+    
+    m_palette[static_cast<std::size_t>(index)] = c;
 }
 
 
@@ -215,6 +245,11 @@ void vga::set_mode(const vga::mode video_mode)
 ////////////////////////////////////////////////////////////////////////////////
 void vga::set_palette(const std::span<const color> colors)
 {
+    if(colors.size() > m_palette.size())
+    {
+        throw std::invalid_argument("vga::set_palette has an invalid argument");
+    }
+
     std::ranges::copy(colors, m_palette.begin());
 }
 
@@ -222,14 +257,17 @@ void vga::set_palette(const std::span<const color> colors)
 ////////////////////////////////////////////////////////////////////////////////
 void vga::set_pixel(const int x, const int y, const int color_index)
 {
-    m_vram.at(xy_to_index(x, y)) = color_index;
-}
+    if(color_index < 0 || color_index > std::ssize(m_palette))
+    {
+        throw std::invalid_argument("vga::set_pixel has an invalid argument");
+    }
 
+    if(x < 0 || x >= m_width || y < 0 || y >= m_height)
+    {
+        return;
+    }
 
-////////////////////////////////////////////////////////////////////////////////
-void vga::set_pixel(const SDL_Point& position, const int color_index)
-{
-    m_vram.at(xy_to_index(position.x, position.y)) = color_index;
+    m_vram[xy_to_index(x, y)] = color_index;
 }
 
 
@@ -238,7 +276,7 @@ void vga::show()
 {
     std::ranges::transform(m_vram, m_pixels.begin(), [&](auto i)
     {
-        return m_palette.at(static_cast<std::size_t>(i)).to_argb();
+        return m_palette[static_cast<std::size_t>(i)].to_argb();
     });
 
     const auto pitch = m_width * static_cast<int>(sizeof(std::uint32_t));

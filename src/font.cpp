@@ -36,7 +36,7 @@ font::font(const std::span<const std::byte> glyphs, const int width, const int h
 ////////////////////////////////////////////////////////////////////////////////
 std::vector<int> font::glyph(const unsigned char c, const int fg, const int bg) const
 {
-    if(fg < 0 || bg < 0)
+    if(fg < 0 || fg > 255 || bg < 0 || bg > 255)
     {
         throw std::invalid_argument("font::glyph has an invalid argument");
     }
