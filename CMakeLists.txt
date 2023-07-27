@@ -3,7 +3,7 @@
 ## Copyright (c) 2023 Ryan Clarke
 ################################################################################
 
-cmake_minimum_required(VERSION 3.23...3.25 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.23...3.27 FATAL_ERROR)
 project(retro VERSION 0.1.0 DESCRIPTION "Retro Computing Library" LANGUAGES CXX)
 
 if(NOT (CMAKE_SYSTEM_NAME STREQUAL "Darwin"))

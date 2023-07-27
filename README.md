@@ -1,7 +1,7 @@
 # Retro Computing Library
 The Retro Computing Library is a simple, object-oriented API utilizing the SDL2
 library, providing access to old school graphics and sound from the CGA, EGA,
-and VGA eras. It is written in C++20.
+and VGA eras. It is written in C++23.
 ## Download
 You can get the latest source code from the [Git repository](https://github.com/kj6msg/retro).
 ## Install
