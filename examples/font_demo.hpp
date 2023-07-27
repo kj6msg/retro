@@ -18,21 +18,13 @@ class font_demo
   public:
     font_demo()
     {
-        for(int x{}, y{}; const auto c : std::views::iota(0, 256))
+        for(const auto c : std::views::iota(0, 256))
         {
-            m_vga.putchar(static_cast<unsigned char>(c), 7, 0, x, y);
+            m_vga.putchar(static_cast<unsigned char>(c), 7);
 
-            constexpr int font_width{8};
-            constexpr int font_height{8};
-            constexpr int columns{16};
-
-            x += font_width;
-
-            if(x == font_width * columns)
-            {
-                x = 0;
-                y += font_height;
-            }
+            const auto col = c % 16;
+            const auto row = c / 16;
+            m_vga.set_cursor(col, row);
         }
 
         m_running = true;

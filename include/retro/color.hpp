@@ -209,13 +209,12 @@ class color
 ////////////////////////////////////////////////////////////////////////////////
 [[nodiscard]] constexpr std::uint32_t make_argb(const int r, const int g, const int b)
 {
-    if(r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
+    if(r < 0 || r > UINT8_MAX || g < 0 || g > UINT8_MAX || b < 0 || b > UINT8_MAX)
     {
         throw std::invalid_argument("make_argb has an invalid argument");
     }
     
     std::uint32_t argb{0xff000000u};
-
     argb |= static_cast<std::uint32_t>(b);
     argb |= static_cast<std::uint32_t>(g) << 8;
     argb |= static_cast<std::uint32_t>(r) << 16;

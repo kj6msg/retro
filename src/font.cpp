@@ -22,14 +22,14 @@ namespace retro
 
 ////////////////////////////////////////////////////////////////////////////////
 font::font(const std::span<const std::byte> glyphs, const int width, const int height)
-    : m_width{width}, m_height{height}, m_glyphs(glyphs.size())
+    : m_width{width}, m_height{height}
 {
-    if(width < 1 || height < 1)
+    if(width < 8 || height < 1 || (std::ssize(glyphs) / height) > 256)
     {
         throw std::invalid_argument("font ctor has an invalid argument");
     }
 
-    std::ranges::copy(glyphs, m_glyphs.begin());
+    std::ranges::copy(glyphs, std::back_inserter(m_glyphs));
 }
 
 

@@ -53,7 +53,7 @@ extern "C" const std::array<std::byte, 16 * 256> glyphs_8x16;
 const retro::font vga_8x8{glyphs_8x8, 8, 8};
 const retro::font ega_8x14{glyphs_8x14, 8, 14};
 const retro::font vga_8x16{glyphs_8x16, 8, 16};
-const retro::font vga_9x16{glyphs_8x16, 9, 16};
+const retro::font vga_9x16{glyphs_8x16, 9, 16};     // uses 8x16 glyphs
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -160,7 +160,7 @@ void vga::blit(const sprite& source)
 ////////////////////////////////////////////////////////////////////////////////
 color vga::get_color(const int index) const
 {
-    if(index < 0 || index > std::ssize(m_palette))
+    if(index < 0 || index >= std::ssize(m_palette))
     {
         std::invalid_argument("vga::get_color has an invalid argument");
     }
@@ -170,17 +170,54 @@ color vga::get_color(const int index) const
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void vga::putchar(const unsigned char c, const int fg, const int bg, const int x, const int y)
+std::pair<int, int> vga::get_cursor() const noexcept
 {
-    if(fg < 0 || fg > std::ssize(m_palette) || bg < 0 || bg > std::ssize(m_palette))
+    return std::make_pair(m_cursor_col, m_cursor_row);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+font vga::get_font() const noexcept
+{
+    return m_font;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+std::vector<color> vga::get_palette() const noexcept
+{
+    return m_palette;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+int vga::get_pixel(const int x, const int y) const
+{
+    if(x < 0 || y < 0)
+    {
+        throw std::invalid_argument("vga::get_pixel has an invalid argument");
+    }
+    
+    return m_vram[xy_to_index(x % m_width, y % m_height)];
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+void vga::putchar(const unsigned char c, const int fg)
+{
+    if(fg < 0 || fg >= std::ssize(m_palette))
     {
         throw std::invalid_argument("vga::putchar has an invalid argument");
     }
     
     const auto [width, height] = m_font.size();
-    const auto glyph = m_font.glyph(c, fg, bg);
+    const auto glyph = m_font.glyph(c, fg, 0);
     sprite s{width, height, glyph};
+
+    const auto x = width * m_cursor_col;
+    const auto y = height * m_cursor_row;
     s.position(x, y);
+
     blit(s);
 }
 
@@ -196,12 +233,27 @@ void vga::reset_palette()
 ////////////////////////////////////////////////////////////////////////////////
 void vga::set_color(const int index, const color& c)
 {
-    if(index < 0 || index > std::ssize(m_palette))
+    if(index < 0 || index >= std::ssize(m_palette))
     {
         throw std::invalid_argument("vga::set_color has an invalid argument");
     }
     
     m_palette[static_cast<std::size_t>(index)] = c;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+void vga::set_cursor(const int col, const int row)
+{
+    m_cursor_col = col % m_columns;
+    m_cursor_row = row % m_rows;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+void vga::set_font(const font& f)
+{
+    m_font = f;
 }
 
 
@@ -212,10 +264,15 @@ void vga::set_mode(const vga::mode video_mode)
     m_width = mode.width;
     m_height = mode.height;
     m_num_colors = mode.num_colors;
-
     m_vram.resize(static_cast<std::size_t>(m_width * m_height));
     m_palette.resize(static_cast<std::size_t>(m_num_colors));
+    
     m_font = mode.font;
+    const auto [font_w, font_h] = m_font.size();
+    m_columns = m_width / font_w;
+    m_rows = m_height / font_h;
+    m_cursor_col = 0;
+    m_cursor_row = 0;
 
     m_pixels.resize(static_cast<std::size_t>(m_width * m_height));
 
@@ -257,17 +314,17 @@ void vga::set_palette(const std::span<const color> colors)
 ////////////////////////////////////////////////////////////////////////////////
 void vga::set_pixel(const int x, const int y, const int color_index)
 {
-    if(color_index < 0 || color_index > std::ssize(m_palette))
+    if(color_index < 0 || color_index >= std::ssize(m_palette))
     {
         throw std::invalid_argument("vga::set_pixel has an invalid argument");
     }
 
-    if(x < 0 || x >= m_width || y < 0 || y >= m_height)
+    if(x < 0 || y < 0)
     {
         return;
     }
 
-    m_vram[xy_to_index(x, y)] = color_index;
+    m_vram[xy_to_index(x % m_width, y % m_height)] = color_index;
 }
 
 
@@ -289,7 +346,7 @@ void vga::show()
 
 
 ////////////////////////////////////////////////////////////////////////////////
-constexpr std::size_t vga::xy_to_index(const int x, const int y) noexcept
+constexpr std::size_t vga::xy_to_index(const int x, const int y) const noexcept
 {
     return static_cast<std::size_t>(x + m_width * y);
 }

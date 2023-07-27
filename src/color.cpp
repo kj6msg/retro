@@ -18,9 +18,9 @@ color color::operator+(const color& b) const noexcept
 {
     color temp;
 
-    temp.m_r = std::max(m_r + b.m_r, UINT8_MAX);
-    temp.m_g = std::max(m_g + b.m_g, UINT8_MAX);
-    temp.m_b = std::max(m_b + b.m_b, UINT8_MAX);
+    temp.m_r = std::min(m_r + b.m_r, UINT8_MAX);
+    temp.m_g = std::min(m_g + b.m_g, UINT8_MAX);
+    temp.m_b = std::min(m_b + b.m_b, UINT8_MAX);
 
     return temp;
 }
@@ -70,9 +70,9 @@ color color::operator*(const color& b) const noexcept
 {
     color temp;
 
-    temp.m_r = std::max(m_r * b.m_r, UINT8_MAX);
-    temp.m_g = std::max(m_g * b.m_g, UINT8_MAX);
-    temp.m_b = std::max(m_b * b.m_b, UINT8_MAX);
+    temp.m_r = std::min(m_r * b.m_r, UINT8_MAX);
+    temp.m_g = std::min(m_g * b.m_g, UINT8_MAX);
+    temp.m_b = std::min(m_b * b.m_b, UINT8_MAX);
 
     return temp;
 }
@@ -94,9 +94,9 @@ color color::operator*(const int b) const noexcept
 ////////////////////////////////////////////////////////////////////////////////
 color& color::operator+=(const color& b) noexcept
 {
-    m_r = std::max(m_r + b.m_r, UINT8_MAX);
-    m_g = std::max(m_g + b.m_g, UINT8_MAX);
-    m_b = std::max(m_b + b.m_b, UINT8_MAX);
+    m_r = std::min(m_r + b.m_r, UINT8_MAX);
+    m_g = std::min(m_g + b.m_g, UINT8_MAX);
+    m_b = std::min(m_b + b.m_b, UINT8_MAX);
 
     return *this;
 }
@@ -138,9 +138,9 @@ color& color::operator-=(const int b) noexcept
 ////////////////////////////////////////////////////////////////////////////////
 color& color::operator*=(const color& b) noexcept
 {
-    m_r = std::max(m_r * b.m_r, UINT8_MAX);
-    m_g = std::max(m_g * b.m_g, UINT8_MAX);
-    m_b = std::max(m_b * b.m_b, UINT8_MAX);
+    m_r = std::min(m_r * b.m_r, UINT8_MAX);
+    m_g = std::min(m_g * b.m_g, UINT8_MAX);
+    m_b = std::min(m_b * b.m_b, UINT8_MAX);
 
     return *this;
 }
@@ -160,9 +160,9 @@ color& color::operator*=(const int b) noexcept
 ////////////////////////////////////////////////////////////////////////////////
 color& color::operator++() noexcept
 {
-    m_r = std::max(m_r + 1, UINT8_MAX);
-    m_g = std::max(m_g + 1, UINT8_MAX);
-    m_b = std::max(m_b + 1, UINT8_MAX);
+    m_r = std::min(m_r + 1, UINT8_MAX);
+    m_g = std::min(m_g + 1, UINT8_MAX);
+    m_b = std::min(m_b + 1, UINT8_MAX);
     
     return *this;
 }

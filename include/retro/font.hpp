@@ -67,8 +67,8 @@ class font
     [[nodiscard]] std::vector<int> glyph(unsigned char c, int fg, int bg) const;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// \brief Get size of font.
-    /// \return size of font (width, height)
+    /// \brief Get size of font glyphs.
+    /// \return size of font glyphs (width, height)
     ////////////////////////////////////////////////////////////////////////////
     [[nodiscard]] std::pair<int, int> size() const noexcept;
 
