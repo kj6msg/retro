@@ -122,6 +122,11 @@ vga::~vga()
 ////////////////////////////////////////////////////////////////////////////////
 void vga::blit(const std::span<const int> source)
 {
+    if(source.size() > m_vram.size())
+    {
+        throw std::invalid_argument("vga::blit has an invalid argument");
+    }
+
     std::ranges::copy(source, m_vram.begin());
 }
 
@@ -140,6 +145,11 @@ void vga::blit(const sprite& source)
 
     const auto pixels = source.pixels();
 
+    if(pixels.size() > m_vram.size())
+    {
+        throw std::invalid_argument("vga::blit has an invalid argument");
+    }
+
     // bounding box and on-screen adjusted coordinates
     const auto l0 = std::max(0, -y0);                   // first visible line
     const auto l1 = std::min(height, m_height - y0);    // last visible line
@@ -154,6 +164,18 @@ void vga::blit(const sprite& source)
         const auto v = m_vram | std::views::drop(xy_to_index(x1, y1 + (line - l0)));
         std::ranges::copy(p, v.begin());
     }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+void vga::clear(const int index)
+{
+    if(index >= std::ssize(m_palette))
+    {
+        throw std::invalid_argument("vga::clear has an invalid argument");
+    }
+
+    std::ranges::fill(m_vram, index);
 }
 
 
