@@ -11,6 +11,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <span>
+#include <string_view>
 #include <vector>
 
 
@@ -107,6 +108,16 @@ class vga
     [[nodiscard]] int get_pixel(int x, int y) const;
 
     ////////////////////////////////////////////////////////////////////////////
+    /// \brief Print string.
+    /// \param s string
+    /// \param col column
+    /// \param row row
+    /// \param fg foreground color
+    /// \param update_cursor if true, cursor position is updated
+    ////////////////////////////////////////////////////////////////////////////
+    void print(std::string_view s, int col, int row, int fg, bool update_cursor);
+
+    ////////////////////////////////////////////////////////////////////////////
     /// \brief Write character at cursor position.
     /// \param c character
     /// \param fg foreground color
@@ -124,7 +135,7 @@ class vga
     /// \param color ARGB formatted color
     ////////////////////////////////////////////////////////////////////////////
     void set_color(int index, const color& c);
-    
+
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Set cursor position.
     /// \param col column

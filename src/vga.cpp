@@ -16,6 +16,7 @@
 #include <ranges>
 #include <span>
 #include <stdexcept>
+#include <string_view>
 #include <vector>
 
 
@@ -219,8 +220,76 @@ int vga::get_pixel(const int x, const int y) const
     {
         throw std::invalid_argument("vga::get_pixel has an invalid argument");
     }
-    
+
     return m_vram[xy_to_index(x % m_width, y % m_height)];
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+void vga::print(const std::string_view s, const int col, const int row, const int fg, const bool update_cursor)
+{
+    if(col < 0 || col >= m_columns || row < 0 || row >= m_rows)
+    {
+        return;
+    }
+
+    if(fg >= std::ssize(m_palette))
+    {
+        throw std::invalid_argument("vga::print has an invalid argument");
+    }
+
+    [[maybe_unused]] const auto saved_cursor_col{m_cursor_col};
+    [[maybe_unused]] const auto saved_cursor_row{m_cursor_row};
+
+    m_cursor_col = col;
+    m_cursor_row = row;
+
+    for(const auto c : s)
+    {
+        switch(c)
+        {
+            case '\a':
+                // TODO: bell
+                break;
+
+            case '\b':
+                m_cursor_col = std::max(0, m_cursor_col - 1);
+                break;
+
+            case '\n':
+                ++m_cursor_row;
+                break;
+
+            case '\r':
+                m_cursor_col = 0;
+                break;
+
+            default:
+                putchar(static_cast<unsigned char>(c), fg);
+                ++m_cursor_col;
+        }
+
+        if(m_cursor_col == m_columns)
+        {
+            m_cursor_col = 0;
+            ++m_cursor_row;
+        }
+
+        if(m_cursor_row == m_rows)
+        {
+            --m_cursor_row;
+            const auto [w, h] = m_font.size();
+            const auto entire_row = (w * m_columns) * h;
+            std::shift_left(m_vram.begin(), m_vram.end(), entire_row);
+            std::fill_n(m_vram.rbegin(), entire_row, 0);
+        }
+    }
+
+    if(!update_cursor)
+    {
+        m_cursor_col = saved_cursor_col;
+        m_cursor_row = saved_cursor_row;
+    }
 }
 
 
@@ -231,7 +300,7 @@ void vga::putchar(const unsigned char c, const int fg)
     {
         throw std::invalid_argument("vga::putchar has an invalid argument");
     }
-    
+
     const auto [width, height] = m_font.size();
     const auto glyph = m_font.glyph(c, fg, 0);
     sprite s{width, height, glyph};
@@ -259,7 +328,7 @@ void vga::set_color(const int index, const color& c)
     {
         throw std::invalid_argument("vga::set_color has an invalid argument");
     }
-    
+
     m_palette[static_cast<std::size_t>(index)] = c;
 }
 
@@ -288,7 +357,7 @@ void vga::set_mode(const vga::mode video_mode)
     m_num_colors = mode.num_colors;
     m_vram.resize(static_cast<std::size_t>(m_width * m_height));
     m_palette.resize(static_cast<std::size_t>(m_num_colors));
-    
+
     m_font = mode.font;
     const auto [font_w, font_h] = m_font.size();
     m_columns = m_width / font_w;
