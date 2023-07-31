@@ -278,10 +278,7 @@ void vga::print(const std::string_view s, const int col, const int row, const in
         if(m_cursor_row == m_rows)
         {
             --m_cursor_row;
-            const auto [w, h] = m_font.size();
-            const auto entire_row = (w * m_columns) * h;
-            std::shift_left(m_vram.begin(), m_vram.end(), entire_row);
-            std::fill_n(m_vram.rbegin(), entire_row, 0);
+            scroll_up();
         }
     }
 
@@ -318,6 +315,26 @@ void vga::reset_palette()
 {
     auto it = std::ranges::copy(ega_palette, m_palette.begin());
     std::fill(it.out, m_palette.end(), color::black);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+void vga::scroll_down(const int lines)
+{
+    const auto [w, h] = m_font.size();
+    const auto num_pixels = (w * m_columns) * h * std::clamp(lines, 0, m_rows);
+    std::shift_right(m_vram.begin(), m_vram.end(), num_pixels);
+    std::fill_n(m_vram.begin(), num_pixels, 0);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+void vga::scroll_up(const int lines)
+{
+    const auto [w, h] = m_font.size();
+    const auto num_pixels = (w * m_columns) * h * std::clamp(lines, 0, m_rows);
+    std::shift_left(m_vram.begin(), m_vram.end(), num_pixels);
+    std::fill_n(m_vram.rbegin(), num_pixels, 0);
 }
 
 
