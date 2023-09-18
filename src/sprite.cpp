@@ -26,7 +26,7 @@ sprite::sprite(const int width, const int height, const std::optional<std::span<
     {
         throw std::invalid_argument("sprite ctor has an invalid argument");
     }
-    
+
     if(pixels.has_value())
     {
         const auto p = pixels.value();
@@ -47,7 +47,7 @@ void sprite::fill(const int color)
     {
         throw std::invalid_argument("sprite::fill has an invalid argument");
     }
-    
+
     std::ranges::fill(m_texture, color);
 }
 
@@ -78,14 +78,14 @@ void sprite::position(const int x, const int y) noexcept
 ////////////////////////////////////////////////////////////////////////////////
 std::pair<int, int> sprite::position() const noexcept
 {
-    return std::make_pair(m_x, m_y);
+    return {m_x, m_y};
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 std::pair<int, int> sprite::size() const noexcept
 {
-    return std::make_pair(m_width, m_height);
+    return {m_width, m_height};
 }
 
 }   // retro

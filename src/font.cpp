@@ -40,7 +40,7 @@ std::vector<int> font::glyph(const unsigned char c, const int fg, const int bg) 
     {
         throw std::invalid_argument("font::glyph has an invalid argument");
     }
-    
+
     const auto glyph = m_glyphs | std::views::drop(m_height * c) | std::views::take(m_height);
     std::vector<int> color_glyph;
 
@@ -66,7 +66,7 @@ std::vector<int> font::glyph(const unsigned char c, const int fg, const int bg) 
 ////////////////////////////////////////////////////////////////////////////////
 std::pair<int, int> font::size() const noexcept
 {
-    return std::make_pair(m_width, m_height);
+    return {m_width, m_height};
 }
 
 }   // retro

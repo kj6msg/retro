@@ -171,7 +171,7 @@ void vga::blit(const sprite& source)
 ////////////////////////////////////////////////////////////////////////////////
 void vga::clear(const int index)
 {
-    if(index >= std::ssize(m_palette))
+    if(index < 0 || index >= std::ssize(m_palette))
     {
         throw std::invalid_argument("vga::clear has an invalid argument");
     }
@@ -195,7 +195,7 @@ color vga::get_color(const int index) const
 ////////////////////////////////////////////////////////////////////////////////
 std::pair<int, int> vga::get_cursor() const noexcept
 {
-    return std::make_pair(m_cursor_col, m_cursor_row);
+    return {m_cursor_col, m_cursor_row};
 }
 
 
